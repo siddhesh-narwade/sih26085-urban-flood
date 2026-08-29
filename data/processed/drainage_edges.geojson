@@ -1,0 +1,631 @@
+{
+  "type": "FeatureCollection",
+  "name": "Mumbai_Kurla_Drainage_Edges",
+  "metadata": {
+    "study_area": "Kurla-BKC Basin, Mumbai",
+    "data_classification": "SIMULATED_DATA (Calibrated Hydraulic Conduits)"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8788,
+            19.068
+          ],
+          [
+            72.877,
+            19.069
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_KURLA_01",
+        "from_node": "IN_KURLA_01",
+        "to_node": "MH_KURLA_MAIN",
+        "length_m": 219.4,
+        "diameter_mm": 900,
+        "roughness_n": 0.014,
+        "slope": 0.00182,
+        "base_capacity_m3s": 0.718,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.877,
+            19.075
+          ],
+          [
+            72.877,
+            19.069
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_KURLA_02",
+        "from_node": "IN_KURLA_02",
+        "to_node": "MH_KURLA_MAIN",
+        "length_m": 667.2,
+        "diameter_mm": 900,
+        "roughness_n": 0.014,
+        "slope": 0.0015,
+        "base_capacity_m3s": 0.651,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.875,
+            19.0725
+          ],
+          [
+            72.877,
+            19.069
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_CST_01",
+        "from_node": "IN_CST_01",
+        "to_node": "MH_KURLA_MAIN",
+        "length_m": 442.3,
+        "diameter_mm": 800,
+        "roughness_n": 0.014,
+        "slope": 0.00271,
+        "base_capacity_m3s": 0.64,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.876,
+            19.0645
+          ],
+          [
+            72.877,
+            19.069
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_MITHI_IN",
+        "from_node": "IN_MITHI_01",
+        "to_node": "MH_KURLA_MAIN",
+        "length_m": 511.3,
+        "diameter_mm": 700,
+        "roughness_n": 0.014,
+        "slope": 0.0015,
+        "base_capacity_m3s": 0.333,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.877,
+            19.069
+          ],
+          [
+            72.874,
+            19.062
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_KURLA_TRUNK",
+        "from_node": "MH_KURLA_MAIN",
+        "to_node": "OF_MITHI_KURLA",
+        "length_m": 839.8,
+        "diameter_mm": 1400,
+        "roughness_n": 0.013,
+        "slope": 0.0015,
+        "base_capacity_m3s": 2.278,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8735,
+            19.082
+          ],
+          [
+            72.877,
+            19.075
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_SION_01",
+        "from_node": "IN_SION_01",
+        "to_node": "IN_KURLA_02",
+        "length_m": 860.9,
+        "diameter_mm": 800,
+        "roughness_n": 0.014,
+        "slope": 0.00441,
+        "base_capacity_m3s": 0.816,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.865,
+            19.0785
+          ],
+          [
+            72.866,
+            19.077
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_KALINA_01",
+        "from_node": "IN_KALINA_01",
+        "to_node": "MH_KALINA_JUN",
+        "length_m": 197.1,
+        "diameter_mm": 800,
+        "roughness_n": 0.014,
+        "slope": 0.01167,
+        "base_capacity_m3s": 1.326,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.868,
+            19.082
+          ],
+          [
+            72.866,
+            19.077
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_KALINA_02",
+        "from_node": "IN_KALINA_02",
+        "to_node": "MH_KALINA_JUN",
+        "length_m": 594.4,
+        "diameter_mm": 700,
+        "roughness_n": 0.014,
+        "slope": 0.00336,
+        "base_capacity_m3s": 0.499,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.869,
+            19.0755
+          ],
+          [
+            72.871,
+            19.0715
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_CST_02",
+        "from_node": "IN_CST_02",
+        "to_node": "MH_CST_MID",
+        "length_m": 491.9,
+        "diameter_mm": 900,
+        "roughness_n": 0.014,
+        "slope": 0.00793,
+        "base_capacity_m3s": 1.497,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.866,
+            19.077
+          ],
+          [
+            72.871,
+            19.0715
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_KALINA_TRUNK",
+        "from_node": "MH_KALINA_JUN",
+        "to_node": "MH_CST_MID",
+        "length_m": 806.3,
+        "diameter_mm": 1000,
+        "roughness_n": 0.014,
+        "slope": 0.0036,
+        "base_capacity_m3s": 1.335,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.871,
+            19.0715
+          ],
+          [
+            72.866,
+            19.063
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_CST_TO_BKC",
+        "from_node": "MH_CST_MID",
+        "to_node": "MH_BKC_TRUNK",
+        "length_m": 1081.4,
+        "diameter_mm": 1200,
+        "roughness_n": 0.013,
+        "slope": 0.0015,
+        "base_capacity_m3s": 1.51,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.866,
+            19.066
+          ],
+          [
+            72.866,
+            19.063
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_BKC_01",
+        "from_node": "IN_BKC_01",
+        "to_node": "MH_BKC_TRUNK",
+        "length_m": 333.6,
+        "diameter_mm": 1200,
+        "roughness_n": 0.013,
+        "slope": 0.0021,
+        "base_capacity_m3s": 1.786,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8645,
+            19.0635
+          ],
+          [
+            72.866,
+            19.063
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_BKC_02",
+        "from_node": "IN_BKC_02",
+        "to_node": "MH_BKC_TRUNK",
+        "length_m": 167.2,
+        "diameter_mm": 1400,
+        "roughness_n": 0.013,
+        "slope": 0.00718,
+        "base_capacity_m3s": 4.983,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8635,
+            19.061
+          ],
+          [
+            72.866,
+            19.063
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_BKC_03",
+        "from_node": "IN_BKC_03",
+        "to_node": "MH_BKC_TRUNK",
+        "length_m": 344.2,
+        "diameter_mm": 1200,
+        "roughness_n": 0.013,
+        "slope": 0.00203,
+        "base_capacity_m3s": 1.758,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.869,
+            19.0635
+          ],
+          [
+            72.866,
+            19.063
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_MITHI_02",
+        "from_node": "IN_MITHI_02",
+        "to_node": "MH_BKC_TRUNK",
+        "length_m": 320.2,
+        "diameter_mm": 800,
+        "roughness_n": 0.014,
+        "slope": 0.00219,
+        "base_capacity_m3s": 0.574,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.866,
+            19.063
+          ],
+          [
+            72.8625,
+            19.0605
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_BKC_OUTFALL",
+        "from_node": "MH_BKC_TRUNK",
+        "to_node": "OF_MITHI_BKC",
+        "length_m": 461.1,
+        "diameter_mm": 1800,
+        "roughness_n": 0.012,
+        "slope": 0.00347,
+        "base_capacity_m3s": 7.336,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.864,
+            19.069
+          ],
+          [
+            72.8605,
+            19.067
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_DHARAVI_01",
+        "from_node": "IN_DHARAVI_01",
+        "to_node": "OF_VAKOLA_NAL",
+        "length_m": 429.8,
+        "diameter_mm": 900,
+        "roughness_n": 0.014,
+        "slope": 0.00396,
+        "base_capacity_m3s": 1.057,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.864,
+            19.073
+          ],
+          [
+            72.8605,
+            19.067
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_DHARAVI_02",
+        "from_node": "IN_DHARAVI_02",
+        "to_node": "OF_VAKOLA_NAL",
+        "length_m": 761.8,
+        "diameter_mm": 900,
+        "roughness_n": 0.014,
+        "slope": 0.00249,
+        "base_capacity_m3s": 0.839,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.883,
+            19.0655
+          ],
+          [
+            72.8845,
+            19.0665
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_EAST_01",
+        "from_node": "IN_EAST_01",
+        "to_node": "MH_EAST_TRUNK",
+        "length_m": 192.9,
+        "diameter_mm": 800,
+        "roughness_n": 0.014,
+        "slope": 0.00363,
+        "base_capacity_m3s": 0.74,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8875,
+            19.069
+          ],
+          [
+            72.8845,
+            19.0665
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_EAST_02",
+        "from_node": "IN_EAST_02",
+        "to_node": "MH_EAST_TRUNK",
+        "length_m": 420.3,
+        "diameter_mm": 800,
+        "roughness_n": 0.014,
+        "slope": 0.00357,
+        "base_capacity_m3s": 0.734,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.886,
+            19.0745
+          ],
+          [
+            72.8845,
+            19.0665
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_EAST_03",
+        "from_node": "IN_EAST_03",
+        "to_node": "MH_EAST_TRUNK",
+        "length_m": 903.4,
+        "diameter_mm": 800,
+        "roughness_n": 0.014,
+        "slope": 0.0015,
+        "base_capacity_m3s": 0.476,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.88,
+            19.079
+          ],
+          [
+            72.886,
+            19.0745
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_EAST_04",
+        "from_node": "IN_EAST_04",
+        "to_node": "IN_EAST_03",
+        "length_m": 805.0,
+        "diameter_mm": 700,
+        "roughness_n": 0.014,
+        "slope": 0.0015,
+        "base_capacity_m3s": 0.333,
+        "data_classification": "SIMULATED_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8845,
+            19.0665
+          ],
+          [
+            72.874,
+            19.062
+          ]
+        ]
+      },
+      "properties": {
+        "edge_id": "P_EAST_TRUNK",
+        "from_node": "MH_EAST_TRUNK",
+        "to_node": "OF_MITHI_KURLA",
+        "length_m": 1211.7,
+        "diameter_mm": 1200,
+        "roughness_n": 0.013,
+        "slope": 0.00305,
+        "base_capacity_m3s": 2.154,
+        "data_classification": "SIMULATED_DATA"
+      }
+    }
+  ]
+}

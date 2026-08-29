@@ -1,0 +1,438 @@
+{
+  "cloudburst_emergency_120mm": {
+    "id": "cloudburst_emergency_120mm",
+    "title": "Severe Cloudburst Deluge (120 mm/hr)",
+    "category": "EMERGENCY_NOWCAST",
+    "description": "High-intensity mesoscale convective storm cell tracking northeast to southwest across Kurla-BKC corridor. Overloads drainage and produces rapid flash street inundation.",
+    "peak_intensity_mmh": 120.0,
+    "storm_speed_kmh": 15.0,
+    "base_blockage_pct": 25.0,
+    "tide_level_m": 2.6,
+    "timeline_profile": [
+      {
+        "t_min": 0,
+        "intensity_pct": 0.15,
+        "storm_center": [
+          19.083,
+          72.885
+        ]
+      },
+      {
+        "t_min": 10,
+        "intensity_pct": 0.35,
+        "storm_center": [
+          19.08,
+          72.882
+        ]
+      },
+      {
+        "t_min": 20,
+        "intensity_pct": 0.65,
+        "storm_center": [
+          19.077,
+          72.879
+        ]
+      },
+      {
+        "t_min": 30,
+        "intensity_pct": 0.9,
+        "storm_center": [
+          19.074,
+          72.876
+        ]
+      },
+      {
+        "t_min": 40,
+        "intensity_pct": 1.0,
+        "storm_center": [
+          19.071,
+          72.873
+        ]
+      },
+      {
+        "t_min": 50,
+        "intensity_pct": 0.95,
+        "storm_center": [
+          19.068,
+          72.87
+        ]
+      },
+      {
+        "t_min": 60,
+        "intensity_pct": 0.85,
+        "storm_center": [
+          19.065,
+          72.867
+        ]
+      },
+      {
+        "t_min": 75,
+        "intensity_pct": 0.7,
+        "storm_center": [
+          19.063,
+          72.864
+        ]
+      },
+      {
+        "t_min": 90,
+        "intensity_pct": 0.55,
+        "storm_center": [
+          19.061,
+          72.862
+        ]
+      },
+      {
+        "t_min": 105,
+        "intensity_pct": 0.4,
+        "storm_center": [
+          19.06,
+          72.86
+        ]
+      },
+      {
+        "t_min": 120,
+        "intensity_pct": 0.3,
+        "storm_center": [
+          19.06,
+          72.86
+        ]
+      },
+      {
+        "t_min": 150,
+        "intensity_pct": 0.18,
+        "storm_center": [
+          19.06,
+          72.86
+        ]
+      },
+      {
+        "t_min": 180,
+        "intensity_pct": 0.08,
+        "storm_center": [
+          19.06,
+          72.86
+        ]
+      }
+    ]
+  },
+  "heavy_monsoon_75mm": {
+    "id": "heavy_monsoon_75mm",
+    "title": "Sustained Heavy Monsoon Downpour (75 mm/hr)",
+    "category": "MODERATE_SEVERE",
+    "description": "Continuous high-volume monsoon rain belt causing gradual drainage saturation across central Kurla lowlands.",
+    "peak_intensity_mmh": 75.0,
+    "storm_speed_kmh": 8.0,
+    "base_blockage_pct": 15.0,
+    "tide_level_m": 2.2,
+    "timeline_profile": [
+      {
+        "t_min": 0,
+        "intensity_pct": 0.3,
+        "storm_center": [
+          19.072,
+          72.875
+        ]
+      },
+      {
+        "t_min": 10,
+        "intensity_pct": 0.5,
+        "storm_center": [
+          19.072,
+          72.875
+        ]
+      },
+      {
+        "t_min": 20,
+        "intensity_pct": 0.7,
+        "storm_center": [
+          19.072,
+          72.875
+        ]
+      },
+      {
+        "t_min": 30,
+        "intensity_pct": 0.85,
+        "storm_center": [
+          19.072,
+          72.875
+        ]
+      },
+      {
+        "t_min": 40,
+        "intensity_pct": 1.0,
+        "storm_center": [
+          19.072,
+          72.875
+        ]
+      },
+      {
+        "t_min": 50,
+        "intensity_pct": 1.0,
+        "storm_center": [
+          19.072,
+          72.875
+        ]
+      },
+      {
+        "t_min": 60,
+        "intensity_pct": 0.9,
+        "storm_center": [
+          19.072,
+          72.875
+        ]
+      },
+      {
+        "t_min": 75,
+        "intensity_pct": 0.8,
+        "storm_center": [
+          19.072,
+          72.875
+        ]
+      },
+      {
+        "t_min": 90,
+        "intensity_pct": 0.7,
+        "storm_center": [
+          19.072,
+          72.875
+        ]
+      },
+      {
+        "t_min": 105,
+        "intensity_pct": 0.6,
+        "storm_center": [
+          19.072,
+          72.875
+        ]
+      },
+      {
+        "t_min": 120,
+        "intensity_pct": 0.5,
+        "storm_center": [
+          19.072,
+          72.875
+        ]
+      },
+      {
+        "t_min": 150,
+        "intensity_pct": 0.35,
+        "storm_center": [
+          19.072,
+          72.875
+        ]
+      },
+      {
+        "t_min": 180,
+        "intensity_pct": 0.2,
+        "storm_center": [
+          19.072,
+          72.875
+        ]
+      }
+    ]
+  },
+  "moderate_monsoon_35mm": {
+    "id": "moderate_monsoon_35mm",
+    "title": "Moderate Monsoon Showers (35 mm/hr)",
+    "category": "BASELINE",
+    "description": "Standard seasonal monsoon rainfall easily conveyed by properly maintained municipal stormwater conduits.",
+    "peak_intensity_mmh": 35.0,
+    "storm_speed_kmh": 20.0,
+    "base_blockage_pct": 5.0,
+    "tide_level_m": 1.8,
+    "timeline_profile": [
+      {
+        "t_min": 0,
+        "intensity_pct": 0.2,
+        "storm_center": [
+          19.075,
+          72.875
+        ]
+      },
+      {
+        "t_min": 30,
+        "intensity_pct": 0.6,
+        "storm_center": [
+          19.072,
+          72.875
+        ]
+      },
+      {
+        "t_min": 60,
+        "intensity_pct": 1.0,
+        "storm_center": [
+          19.07,
+          72.875
+        ]
+      },
+      {
+        "t_min": 90,
+        "intensity_pct": 0.7,
+        "storm_center": [
+          19.068,
+          72.875
+        ]
+      },
+      {
+        "t_min": 120,
+        "intensity_pct": 0.4,
+        "storm_center": [
+          19.065,
+          72.875
+        ]
+      },
+      {
+        "t_min": 150,
+        "intensity_pct": 0.2,
+        "storm_center": [
+          19.065,
+          72.875
+        ]
+      },
+      {
+        "t_min": 180,
+        "intensity_pct": 0.05,
+        "storm_center": [
+          19.065,
+          72.875
+        ]
+      }
+    ]
+  },
+  "tidal_lock_cloudburst": {
+    "id": "tidal_lock_cloudburst",
+    "title": "Tidal Lock + 100 mm/hr Cloudburst",
+    "category": "COMPOUND_DISASTER",
+    "description": "Severe 3.4m astronomical spring high-tide submerging Mithi River floodgates combined with intense 100mm/hr rainfall.",
+    "peak_intensity_mmh": 100.0,
+    "storm_speed_kmh": 10.0,
+    "base_blockage_pct": 30.0,
+    "tide_level_m": 3.4,
+    "timeline_profile": [
+      {
+        "t_min": 0,
+        "intensity_pct": 0.2,
+        "storm_center": [
+          19.075,
+          72.878
+        ]
+      },
+      {
+        "t_min": 20,
+        "intensity_pct": 0.6,
+        "storm_center": [
+          19.073,
+          72.875
+        ]
+      },
+      {
+        "t_min": 40,
+        "intensity_pct": 1.0,
+        "storm_center": [
+          19.07,
+          72.872
+        ]
+      },
+      {
+        "t_min": 60,
+        "intensity_pct": 0.9,
+        "storm_center": [
+          19.068,
+          72.87
+        ]
+      },
+      {
+        "t_min": 90,
+        "intensity_pct": 0.7,
+        "storm_center": [
+          19.065,
+          72.868
+        ]
+      },
+      {
+        "t_min": 120,
+        "intensity_pct": 0.5,
+        "storm_center": [
+          19.063,
+          72.865
+        ]
+      },
+      {
+        "t_min": 180,
+        "intensity_pct": 0.2,
+        "storm_center": [
+          19.06,
+          72.86
+        ]
+      }
+    ]
+  },
+  "blocked_drain_crisis": {
+    "id": "blocked_drain_crisis",
+    "title": "80 mm/hr Deluge with 60% Silt & Trash Blockage",
+    "category": "INFRASTRUCTURE_FAILURE",
+    "description": "Critical stormwater trunk lines clogged by plastic/silt accumulation (60% blockage), causing massive surcharge on LBS Marg and CST Road.",
+    "peak_intensity_mmh": 80.0,
+    "storm_speed_kmh": 12.0,
+    "base_blockage_pct": 60.0,
+    "tide_level_m": 2.4,
+    "timeline_profile": [
+      {
+        "t_min": 0,
+        "intensity_pct": 0.25,
+        "storm_center": [
+          19.075,
+          72.88
+        ]
+      },
+      {
+        "t_min": 20,
+        "intensity_pct": 0.7,
+        "storm_center": [
+          19.072,
+          72.876
+        ]
+      },
+      {
+        "t_min": 40,
+        "intensity_pct": 1.0,
+        "storm_center": [
+          19.07,
+          72.873
+        ]
+      },
+      {
+        "t_min": 60,
+        "intensity_pct": 0.85,
+        "storm_center": [
+          19.067,
+          72.87
+        ]
+      },
+      {
+        "t_min": 90,
+        "intensity_pct": 0.6,
+        "storm_center": [
+          19.065,
+          72.868
+        ]
+      },
+      {
+        "t_min": 120,
+        "intensity_pct": 0.4,
+        "storm_center": [
+          19.062,
+          72.865
+        ]
+      },
+      {
+        "t_min": 180,
+        "intensity_pct": 0.15,
+        "storm_center": [
+          19.06,
+          72.86
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,628 @@
+{
+  "type": "FeatureCollection",
+  "name": "Mumbai_Kurla_BKC_Road_Network",
+  "metadata": {
+    "study_area": "Kurla West - BKC - Sion Basin, Mumbai",
+    "bbox": [
+      72.86,
+      19.06,
+      72.89,
+      19.085
+    ],
+    "data_classification": "REAL_PUBLIC_DATA (OSM Derived)"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8795,
+            19.0665
+          ],
+          [
+            72.878,
+            19.071
+          ]
+        ]
+      },
+      "properties": {
+        "road_id": "R_LBS_01",
+        "name": "LBS Marg (Kurla Stn to Kurla West)",
+        "from_node": "J_KURLA_STN",
+        "to_node": "J_LBS_KURLA",
+        "road_type": "arterial",
+        "lanes": 4,
+        "length_m": 524.6,
+        "base_elev_m": 3.0,
+        "slope_pct": 0.08,
+        "imperviousness": 0.9,
+        "surface_area_m2": 7344.7,
+        "tributary_area_m2": 20565.2,
+        "drainage_node_id": "IN_KURLA_01",
+        "criticality": 5,
+        "speed_limit_kmh": 50,
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.878,
+            19.071
+          ],
+          [
+            72.8765,
+            19.0805
+          ]
+        ]
+      },
+      "properties": {
+        "road_id": "R_LBS_02",
+        "name": "LBS Marg (Kurla West to Sion Entry)",
+        "from_node": "J_LBS_KURLA",
+        "to_node": "J_LBS_SION",
+        "road_type": "arterial",
+        "lanes": 4,
+        "length_m": 1068.0,
+        "base_elev_m": 4.1,
+        "slope_pct": 0.24,
+        "imperviousness": 0.88,
+        "surface_area_m2": 14952.7,
+        "tributary_area_m2": 41867.5,
+        "drainage_node_id": "IN_KURLA_02",
+        "criticality": 5,
+        "speed_limit_kmh": 50,
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8765,
+            19.0805
+          ],
+          [
+            72.872,
+            19.083
+          ]
+        ]
+      },
+      "properties": {
+        "road_id": "R_SION_01",
+        "name": "Sion-Bandra Link (LBS to Sion Hospital)",
+        "from_node": "J_LBS_SION",
+        "to_node": "J_SION_HOSP",
+        "road_type": "arterial",
+        "lanes": 4,
+        "length_m": 548.5,
+        "base_elev_m": 6.1,
+        "slope_pct": 0.26,
+        "imperviousness": 0.85,
+        "surface_area_m2": 7679.5,
+        "tributary_area_m2": 21502.7,
+        "drainage_node_id": "IN_SION_01",
+        "criticality": 5,
+        "speed_limit_kmh": 50,
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.878,
+            19.071
+          ],
+          [
+            72.8725,
+            19.0745
+          ]
+        ]
+      },
+      "properties": {
+        "road_id": "R_CST_01",
+        "name": "CST Road (Kurla West to CST Mid)",
+        "from_node": "J_LBS_KURLA",
+        "to_node": "J_CST_RD_1",
+        "road_type": "arterial",
+        "lanes": 4,
+        "length_m": 696.8,
+        "base_elev_m": 3.2,
+        "slope_pct": 0.11,
+        "imperviousness": 0.85,
+        "surface_area_m2": 9755.4,
+        "tributary_area_m2": 27315.0,
+        "drainage_node_id": "IN_CST_01",
+        "criticality": 4,
+        "speed_limit_kmh": 50,
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8725,
+            19.0745
+          ],
+          [
+            72.866,
+            19.076
+          ]
+        ]
+      },
+      "properties": {
+        "road_id": "R_CST_02",
+        "name": "CST Road (CST Mid to Kalina Chowk)",
+        "from_node": "J_CST_RD_1",
+        "to_node": "J_CST_RD_2",
+        "road_type": "arterial",
+        "lanes": 4,
+        "length_m": 703.1,
+        "base_elev_m": 5.55,
+        "slope_pct": 0.55,
+        "imperviousness": 0.82,
+        "surface_area_m2": 9844.1,
+        "tributary_area_m2": 27563.4,
+        "drainage_node_id": "IN_CST_02",
+        "criticality": 4,
+        "speed_limit_kmh": 50,
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.866,
+            19.076
+          ],
+          [
+            72.864,
+            19.081
+          ]
+        ]
+      },
+      "properties": {
+        "road_id": "R_KALINA_01",
+        "name": "Kalina Main Road",
+        "from_node": "J_CST_RD_2",
+        "to_node": "J_KALINA_DEP",
+        "road_type": "collector",
+        "lanes": 2,
+        "length_m": 594.4,
+        "base_elev_m": 8.2,
+        "slope_pct": 0.24,
+        "imperviousness": 0.78,
+        "surface_area_m2": 4160.6,
+        "tributary_area_m2": 11649.7,
+        "drainage_node_id": "IN_KALINA_01",
+        "criticality": 3,
+        "speed_limit_kmh": 35,
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.864,
+            19.081
+          ],
+          [
+            72.872,
+            19.083
+          ]
+        ]
+      },
+      "properties": {
+        "road_id": "R_KALINA_SION",
+        "name": "Kalina to Sion Hospital Connector",
+        "from_node": "J_KALINA_DEP",
+        "to_node": "J_SION_HOSP",
+        "road_type": "collector",
+        "lanes": 2,
+        "length_m": 869.6,
+        "base_elev_m": 7.85,
+        "slope_pct": 0.24,
+        "imperviousness": 0.8,
+        "surface_area_m2": 6087.2,
+        "tributary_area_m2": 17044.1,
+        "drainage_node_id": "IN_KALINA_02",
+        "criticality": 3,
+        "speed_limit_kmh": 35,
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8725,
+            19.0745
+          ],
+          [
+            72.867,
+            19.068
+          ]
+        ]
+      },
+      "properties": {
+        "road_id": "R_BKC_01",
+        "name": "BKC Connector (CST to BKC North)",
+        "from_node": "J_CST_RD_1",
+        "to_node": "J_BKC_CONN",
+        "road_type": "arterial",
+        "lanes": 6,
+        "length_m": 925.5,
+        "base_elev_m": 3.85,
+        "slope_pct": 0.05,
+        "imperviousness": 0.88,
+        "surface_area_m2": 19434.7,
+        "tributary_area_m2": 54417.2,
+        "drainage_node_id": "IN_BKC_01",
+        "criticality": 4,
+        "speed_limit_kmh": 50,
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.867,
+            19.068
+          ],
+          [
+            72.865,
+            19.064
+          ]
+        ]
+      },
+      "properties": {
+        "road_id": "R_BKC_02",
+        "name": "BKC Central Avenue",
+        "from_node": "J_BKC_CONN",
+        "to_node": "J_BKC_CENT",
+        "road_type": "arterial",
+        "lanes": 6,
+        "length_m": 491.9,
+        "base_elev_m": 4.45,
+        "slope_pct": 0.14,
+        "imperviousness": 0.9,
+        "surface_area_m2": 10330.8,
+        "tributary_area_m2": 28926.3,
+        "drainage_node_id": "IN_BKC_02",
+        "criticality": 4,
+        "speed_limit_kmh": 50,
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.865,
+            19.064
+          ],
+          [
+            72.8635,
+            19.061
+          ]
+        ]
+      },
+      "properties": {
+        "road_id": "R_BKC_03",
+        "name": "BKC South Boulevard",
+        "from_node": "J_BKC_CENT",
+        "to_node": "J_BKC_SOUTH",
+        "road_type": "arterial",
+        "lanes": 6,
+        "length_m": 369.0,
+        "base_elev_m": 4.5,
+        "slope_pct": 0.16,
+        "imperviousness": 0.88,
+        "surface_area_m2": 7748.1,
+        "tributary_area_m2": 21694.8,
+        "drainage_node_id": "IN_BKC_03",
+        "criticality": 3,
+        "speed_limit_kmh": 50,
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8795,
+            19.0665
+          ],
+          [
+            72.873,
+            19.063
+          ]
+        ]
+      },
+      "properties": {
+        "road_id": "R_MITHI_01",
+        "name": "Mithi River Causey (Kurla Stn to Mithi Bridge)",
+        "from_node": "J_KURLA_STN",
+        "to_node": "J_MITHI_BRG",
+        "road_type": "collector",
+        "lanes": 2,
+        "length_m": 786.2,
+        "base_elev_m": 2.9,
+        "slope_pct": 0.08,
+        "imperviousness": 0.85,
+        "surface_area_m2": 5503.4,
+        "tributary_area_m2": 15409.6,
+        "drainage_node_id": "IN_MITHI_01",
+        "criticality": 4,
+        "speed_limit_kmh": 35,
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.865,
+            19.064
+          ],
+          [
+            72.873,
+            19.063
+          ]
+        ]
+      },
+      "properties": {
+        "road_id": "R_MITHI_02",
+        "name": "BKC to Mithi River Link",
+        "from_node": "J_BKC_CENT",
+        "to_node": "J_MITHI_BRG",
+        "road_type": "collector",
+        "lanes": 2,
+        "length_m": 848.1,
+        "base_elev_m": 3.7,
+        "slope_pct": 0.26,
+        "imperviousness": 0.85,
+        "surface_area_m2": 5936.7,
+        "tributary_area_m2": 16622.7,
+        "drainage_node_id": "IN_MITHI_02",
+        "criticality": 3,
+        "speed_limit_kmh": 35,
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.862,
+            19.07
+          ],
+          [
+            72.867,
+            19.068
+          ]
+        ]
+      },
+      "properties": {
+        "road_id": "R_DHARAVI_01",
+        "name": "Dharavi - BKC Western Approach",
+        "from_node": "J_DHARAVI_CK",
+        "to_node": "J_BKC_CONN",
+        "road_type": "collector",
+        "lanes": 2,
+        "length_m": 570.6,
+        "base_elev_m": 4.0,
+        "slope_pct": 0.04,
+        "imperviousness": 0.85,
+        "surface_area_m2": 3994.1,
+        "tributary_area_m2": 11183.5,
+        "drainage_node_id": "IN_DHARAVI_01",
+        "criticality": 3,
+        "speed_limit_kmh": 35,
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.862,
+            19.07
+          ],
+          [
+            72.866,
+            19.076
+          ]
+        ]
+      },
+      "properties": {
+        "road_id": "R_DHARAVI_02",
+        "name": "Dharavi to CST Connector",
+        "from_node": "J_DHARAVI_CK",
+        "to_node": "J_CST_RD_2",
+        "road_type": "collector",
+        "lanes": 2,
+        "length_m": 788.6,
+        "base_elev_m": 5.7,
+        "slope_pct": 0.46,
+        "imperviousness": 0.8,
+        "surface_area_m2": 5519.9,
+        "tributary_area_m2": 15455.7,
+        "drainage_node_id": "IN_DHARAVI_02",
+        "criticality": 3,
+        "speed_limit_kmh": 35,
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8795,
+            19.0665
+          ],
+          [
+            72.887,
+            19.065
+          ]
+        ]
+      },
+      "properties": {
+        "road_id": "R_NEHRU_01",
+        "name": "Nehru Nagar Road",
+        "from_node": "J_KURLA_STN",
+        "to_node": "J_NEHRU_NGR",
+        "road_type": "collector",
+        "lanes": 2,
+        "length_m": 805.7,
+        "base_elev_m": 4.7,
+        "slope_pct": 0.37,
+        "imperviousness": 0.78,
+        "surface_area_m2": 5639.7,
+        "tributary_area_m2": 15791.1,
+        "drainage_node_id": "IN_EAST_01",
+        "criticality": 3,
+        "speed_limit_kmh": 35,
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.887,
+            19.065
+          ],
+          [
+            72.8885,
+            19.072
+          ]
+        ]
+      },
+      "properties": {
+        "road_id": "R_TILAK_01",
+        "name": "Tilak Nagar Flyover Arterial",
+        "from_node": "J_NEHRU_NGR",
+        "to_node": "J_TILAK_NGR",
+        "road_type": "arterial",
+        "lanes": 4,
+        "length_m": 794.2,
+        "base_elev_m": 6.65,
+        "slope_pct": 0.11,
+        "imperviousness": 0.85,
+        "surface_area_m2": 11118.3,
+        "tributary_area_m2": 31131.4,
+        "drainage_node_id": "IN_EAST_02",
+        "criticality": 4,
+        "speed_limit_kmh": 50,
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8885,
+            19.072
+          ],
+          [
+            72.884,
+            19.077
+          ]
+        ]
+      },
+      "properties": {
+        "road_id": "R_PREMIER_01",
+        "name": "Premier Road (Tilak to Premier)",
+        "from_node": "J_TILAK_NGR",
+        "to_node": "J_PREM_NGR",
+        "road_type": "collector",
+        "lanes": 2,
+        "length_m": 729.9,
+        "base_elev_m": 5.8,
+        "slope_pct": 0.36,
+        "imperviousness": 0.8,
+        "surface_area_m2": 5109.3,
+        "tributary_area_m2": 14305.9,
+        "drainage_node_id": "IN_EAST_03",
+        "criticality": 3,
+        "speed_limit_kmh": 35,
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.884,
+            19.077
+          ],
+          [
+            72.8765,
+            19.0805
+          ]
+        ]
+      },
+      "properties": {
+        "road_id": "R_PREMIER_02",
+        "name": "Premier Road to LBS Sion Link",
+        "from_node": "J_PREM_NGR",
+        "to_node": "J_LBS_SION",
+        "road_type": "collector",
+        "lanes": 2,
+        "length_m": 879.0,
+        "base_elev_m": 4.95,
+        "slope_pct": 0.1,
+        "imperviousness": 0.82,
+        "surface_area_m2": 6153.0,
+        "tributary_area_m2": 17228.5,
+        "drainage_node_id": "IN_EAST_04",
+        "criticality": 3,
+        "speed_limit_kmh": 35,
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "type": "FeatureCollection",
+  "name": "Mumbai_Kurla_Critical_Infrastructure",
+  "metadata": {
+    "study_area": "Kurla-BKC Basin, Mumbai",
+    "data_classification": "REAL_PUBLIC_DATA"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8715,
+          19.0835
+        ]
+      },
+      "properties": {
+        "poi_id": "POI_SION_HOSP",
+        "name": "Lokmanya Tilak Municipal General Hospital (Sion)",
+        "poi_type": "hospital",
+        "criticality": "HIGH_EMERGENCY",
+        "description": "Primary tertiary municipal hospital and Level-1 trauma center for Mumbai Eastern Suburbs.",
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.867,
+          19.0635
+        ]
+      },
+      "properties": {
+        "poi_id": "POI_ASIAN_HEART",
+        "name": "Asian Heart Institute (BKC)",
+        "poi_type": "hospital",
+        "criticality": "HIGH_EMERGENCY",
+        "description": "Multi-specialty cardiac hospital in Bandra Kurla Complex.",
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.879,
+          19.0715
+        ]
+      },
+      "properties": {
+        "poi_id": "POI_KURLA_FIRE",
+        "name": "Kurla West Fire & Emergency Station",
+        "poi_type": "fire_station",
+        "criticality": "EMERGENCY_DISPATCH",
+        "description": "Primary disaster and rescue dispatch station for Kurla-Kalina sector.",
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8645,
+          19.062
+        ]
+      },
+      "properties": {
+        "poi_id": "POI_BKC_FIRE",
+        "name": "BKC Fire Station",
+        "poi_type": "fire_station",
+        "criticality": "EMERGENCY_DISPATCH",
+        "description": "Heavy rescue unit covering BKC commercial and diplomatic enclave.",
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8795,
+          19.0665
+        ]
+      },
+      "properties": {
+        "poi_id": "POI_KURLA_STN",
+        "name": "Kurla Suburban Railway Station Junction",
+        "poi_type": "transit_hub",
+        "criticality": "TRANSIT_CRITICAL",
+        "description": "Major suburban rail interchange connecting Central and Harbour lines.",
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8635,
+          19.0805
+        ]
+      },
+      "properties": {
+        "poi_id": "POI_KALINA_BUS",
+        "name": "BEST Kalina Bus Depot",
+        "poi_type": "transit_hub",
+        "criticality": "TRANSIT_CRITICAL",
+        "description": "Primary public bus transport operations depot for North-Central Mumbai.",
+        "data_classification": "REAL_PUBLIC_DATA"
+      }
+    }
+  ]
+}
