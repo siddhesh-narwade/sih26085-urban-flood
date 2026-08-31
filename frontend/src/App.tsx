@@ -117,6 +117,7 @@ export const App: React.FC = () => {
                     const attachedRoad = sortedRoads.find((r) => r.road_id.includes(nId));
                     if (attachedRoad) setSelectedRoadId(attachedRoad.road_id);
                   }}
+                  onClearRoute={() => setSelectedRoute(null)}
                 />
               </div>
 

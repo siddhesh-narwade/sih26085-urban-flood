@@ -74,6 +74,9 @@ export interface SimulationResult {
     conduit_capacity_multiplier: number;
     tide_level_m: number;
     generated_at: string;
+    rainfall_intensity_multiplier?: number;
+    scenario_base_intensity_mmh?: number;
+    applied_peak_intensity_mmh?: number;
   };
   timeline: TimelineStep[];
   alerts: Array<{
@@ -133,6 +136,12 @@ export interface RoutePlanResponse {
   vehicle_type: string;
   vehicle_clearance_cm: number;
   time_minute: number;
+  start_node_id?: string;
+  destination_node_id?: string;
+  start_name?: string;
+  destination_name?: string;
+  start_coords?: [number, number];
+  dest_coords?: [number, number];
   safe_route_found: boolean;
   safe_route_distance_m: number;
   safe_route_eta_min: number;

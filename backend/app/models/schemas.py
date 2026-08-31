@@ -34,6 +34,12 @@ class RoutePlanResponse(BaseModel):
     vehicle_type: str
     vehicle_clearance_cm: float
     time_minute: int
+    start_node_id: Optional[str] = None
+    destination_node_id: Optional[str] = None
+    start_name: Optional[str] = None
+    destination_name: Optional[str] = None
+    start_coords: Optional[List[float]] = None
+    dest_coords: Optional[List[float]] = None
     
     # Safe Route
     safe_route_found: bool

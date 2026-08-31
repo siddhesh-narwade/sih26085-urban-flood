@@ -51,25 +51,14 @@ body {
   background: #111827 !important;
 }
 
-.surcharge-pulse-icon {
-  animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
-}
-
-@keyframes pulse-ring {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.7);
-  }
-  70% {
-    transform: scale(1.15);
-    box-shadow: 0 0 0 12px rgba(236, 72, 153, 0);
-  }
-  100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(236, 72, 153, 0);
-  }
-}
-
 .glow-effect {
   filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.6));
+}
+
+/* Static Surcharge & Route Marker Wrappers */
+.surcharge-static-marker-wrapper,
+.custom-source-pin,
+.custom-dest-pin {
+  background: transparent !important;
+  border: none !important;
 }
