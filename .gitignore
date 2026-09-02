@@ -32,6 +32,10 @@ credentials.json
 data/mosdac_raw/
 data/processed/mosdac_live_rainfall.json
 
+# Optional vendor utility artifacts
+mdapi.zip
+mosdac_api_tool/
+
 # IDE
 .idea/
 .vscode/
