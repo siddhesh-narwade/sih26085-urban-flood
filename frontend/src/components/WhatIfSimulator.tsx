@@ -10,7 +10,9 @@ import {
   Trash2, 
   Gauge, 
   Zap,
-  CheckCircle2
+  CheckCircle2,
+  Satellite,
+  RefreshCw
 } from 'lucide-react';
 import { api } from '../services/api';
 import { SimulationResult } from '../types';
@@ -35,9 +37,40 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
   const [tideLevelM, setTideLevelM] = useState<number>(2.4);
   const [horizonMin, setHorizonMin] = useState<number>(180);
   const [loading, setLoading] = useState<boolean>(false);
+  const [syncingMosdac, setSyncingMosdac] = useState<boolean>(false);
+  const [mosdacMsg, setMosdacMsg] = useState<string | null>(null);
   const [lastExecTime, setLastExecTime] = useState<number | null>(null);
 
   if (!isOpen) return null;
+
+  const handleSyncMosdac = async () => {
+    setSyncingMosdac(true);
+    setMosdacMsg(null);
+    try {
+      const result = await api.syncMosdac();
+      setMosdacMsg(result.success ? `Synced ${result.data?.filename || 'live granule'}` : `Sync failed: ${result.error}`);
+      if (result.success) {
+        handleScenarioChange('mosdac_live_satellite_dwr');
+        setLoading(true);
+        const liveSimulation = await api.runSimulation({
+          scenario_id: 'mosdac_live_satellite_dwr',
+          rainfall_intensity_multiplier: 1.0,
+          blockage_percentage: blockagePct,
+          conduit_capacity_multiplier: capacityMult,
+          tide_level_m: tideLevelM,
+          horizon_minutes: horizonMin,
+          time_step_min: 10
+        });
+        setLastExecTime(liveSimulation.metadata.execution_time_ms);
+        onSimulationUpdate(liveSimulation);
+      }
+    } catch (error: any) {
+      setMosdacMsg(`Sync error: ${error.message}`);
+    } finally {
+      setSyncingMosdac(false);
+      setLoading(false);
+    }
+  };
 
   const handleScenarioChange = (scenId: string) => {
     setSelectedScenarioId(scenId);
@@ -90,11 +123,27 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
         Dynamically adjust hydrologic rainfall intensity, debris blockage, and tidal backwater to stress-test municipal drainage resilience.
       </p>
 
+      <div className="mt-4 p-3 rounded-xl bg-gradient-to-br from-slate-900 via-sky-950/40 to-slate-900 border border-sky-500/40">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Satellite className="w-4 h-4 text-sky-400" />
+            <span className="font-bold text-xs text-sky-300">ISRO MOSDAC Radar Ingestion</span>
+          </div>
+          <span className="text-[10px] text-emerald-400 bg-emerald-950/80 px-1.5 py-0.5 rounded border border-emerald-800">READY</span>
+        </div>
+        <p className="text-[11px] text-slate-400 mt-1 font-mono">3RIMG_L2B_HEM HDF5 precipitation</p>
+        <button onClick={handleSyncMosdac} disabled={syncingMosdac} className="mt-2.5 w-full py-1.5 px-3 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 hover:text-white border border-sky-400/40 text-xs font-mono flex items-center justify-center space-x-1.5 transition-all">
+          <RefreshCw className={`w-3.5 h-3.5 ${syncingMosdac ? 'animate-spin' : ''}`} />
+          <span>{syncingMosdac ? 'Syncing with MOSDAC...' : 'Fetch Live MOSDAC Radar'}</span>
+        </button>
+        {mosdacMsg && <p className="text-[10px] text-slate-300 mt-1.5 text-center font-mono">{mosdacMsg}</p>}
+      </div>
+
       {/* Preset Scenarios Selector */}
       <div className="mt-5 space-y-2">
         <label className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center space-x-1.5">
           <Zap className="w-3.5 h-3.5 text-amber-400" />
-          <span>Preset Disaster Scenarios</span>
+          <span>Observational & Disaster Scenarios</span>
         </label>
         <div className="space-y-1.5">
           {Object.entries(scenarios).map(([id, scen]: [string, any]) => (

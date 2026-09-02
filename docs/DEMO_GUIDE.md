@@ -10,6 +10,14 @@ This step-by-step walkthrough guides presenters through the winning 5-minute SIH
 3. State the core differentiator:
    > *"Most flood dashboards treat AI as an opaque statistical black box that ignores civil infrastructure. Our system explicitly couples atmospheric rainfall nowcasting, high-resolution DEM terrain gradients, and underground directed stormwater pipe hydraulics (Manning's equation) to forecast street-level flood depth in centimeters and dispatch emergency services on safe routes."*
 
+### Optional live MOSDAC proof point
+Before the scripted stress test, open `http://127.0.0.1:8000/docs` and run:
+1. `GET /api/data/mosdac/granules` to show current ISRO MOSDAC catalog entries.
+2. `POST /api/data/mosdac/sync` to download and parse the newest HDF5 granule.
+3. `GET /api/data/mosdac/status` to show the synced filename and `VALID_OBSERVATIONAL_DATA`.
+
+Explain that the live granule is the observational input, while the controlled cloudburst scenario is used for a repeatable demonstration of flooding, surcharge, and routing decisions.
+
 ---
 
 ## ⏱️ Minute 1:00 – 2:30 | 0–3 Hour Timeline & Surcharge Backflow

@@ -149,3 +149,24 @@ Computes comparative direct vs flood-avoidance route for specified vehicle profi
 - `GET /api/drainage/edges` — Drainage conduits GeoJSON.
 - `GET /api/data/poi` — Critical infrastructure POIs GeoJSON.
 - `GET /api/data/dem` — DEM 25x25 elevation grid JSON.
+
+### MOSDAC DWR Endpoints
+- `GET /api/data/mosdac/status` — Authentication state, latest synced granule, and rainfall summary.
+- `GET /api/data/mosdac/granules` — Latest available `3RIMG_L2B_HEM` catalog entries.
+- `POST /api/data/mosdac/sync` — Authenticates with MOSDAC, downloads the newest HDF5 granule, extracts the Mumbai study area, and caches the processed rainfall field.
+
+**Live sync response example:**
+```json
+{
+  "success": true,
+  "message": "Successfully synced MOSDAC granule 3RIMG_..._L2B_HEM_...h5",
+  "data": {
+    "status": "VALID_OBSERVATIONAL_DATA",
+    "total_points_in_mumbai": 48,
+    "max_rain_mmh": 0.0,
+    "mean_rain_mmh": 0.0
+  }
+}
+```
+
+The zero values above are valid if the selected observation contains no rainfall over Mumbai; they do not indicate a parser failure. The `mosdac_live_satellite_dwr` scenario uses the latest cached field in the flood simulation, while the other scenarios remain controlled synthetic stress tests for repeatable judging.

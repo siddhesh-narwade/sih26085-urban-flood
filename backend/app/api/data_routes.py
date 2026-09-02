@@ -4,6 +4,7 @@ from app.data_loader import dataset
 from app.config import settings
 from app.models.schemas import SystemHealthResponse, DataLayerMetadata
 from app.api.simulation_routes import simulation_engine
+from app.engine.mosdac_service import mosdac_service
 
 router = APIRouter(prefix="/api/data", tags=["Data & System"])
 
@@ -40,12 +41,53 @@ def get_dem() -> Dict[str, Any]:
     """Returns DEM elevation matrix and metadata."""
     return dataset.dem
 
+
+@router.get("/mosdac/status")
+def get_mosdac_status() -> Dict[str, Any]:
+    latest = mosdac_service.latest_rainfall_field or {}
+    return {
+        "connected": bool(mosdac_service.username and mosdac_service.password),
+        "credentials_configured": bool(mosdac_service.username and mosdac_service.password),
+        "username": mosdac_service.username or None,
+        "dataset_id": settings.MOSDAC_DATASET_ID,
+        "last_sync": latest.get("timestamp", "Not yet synced"),
+        "source": latest.get("source", "ISRO MOSDAC Satellite / DWR"),
+        "active_file": latest.get("filename", "N/A"),
+        "max_rain_mmh": latest.get("max_rain_mmh", 0.0),
+        "mean_rain_mmh": latest.get("mean_rain_mmh", 0.0),
+        "status": latest.get("status", "READY"),
+    }
+
+
+@router.post("/mosdac/sync")
+def sync_mosdac() -> Dict[str, Any]:
+    try:
+        result = mosdac_service.sync_live_data()
+        return {"success": True, "message": f"Successfully synced MOSDAC granule {result.get('filename')}", "data": result}
+    except Exception as exc:
+        return {"success": False, "error": str(exc)}
+
+
+@router.get("/mosdac/granules")
+def get_mosdac_granules() -> Dict[str, Any]:
+    granules = mosdac_service.search_latest_granules(count=5)
+    return {"dataset_id": settings.MOSDAC_DATASET_ID, "count": len(granules), "granules": granules}
+
 @router.get("/provenance", response_model=List[DataLayerMetadata])
 def get_data_provenance() -> List[DataLayerMetadata]:
     """
     Returns complete scientific provenance and classification (Real, Derived, Simulated).
     """
     return [
+        DataLayerMetadata(
+            layer_name="Doppler Weather Radar (DWR) & Satellite Precipitation",
+            classification="REAL_PUBLIC_DATA",
+            source="ISRO / SAC Meteorological & Oceanographic Satellite Data Archival Centre (MOSDAC)",
+            spatial_resolution="HDF5 Level-2B Hydro-Estimator field over Mumbai",
+            temporal_resolution="Live catalog refresh / timestamped granules",
+            license="ISRO Open Data Access / Registered User License",
+            notes="MOSDAC HEM rainfall is spatially extracted for the Kurla-BKC study area and used by the live simulation scenario.",
+        ),
         DataLayerMetadata(
             layer_name="Road Network & Junctions",
             classification="REAL_PUBLIC_DATA",

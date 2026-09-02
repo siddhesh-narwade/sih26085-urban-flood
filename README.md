@@ -73,6 +73,19 @@ npm run dev
 ```
 *UI Command Center runs at:* `http://localhost:5173`
 
+### Optional MOSDAC DWR feed
+The prototype keeps its simulated rainfall scenarios unless MOSDAC credentials
+are configured. Copy `.env.example` to a local environment file or set the
+variables directly in PowerShell before starting the backend:
+```powershell
+$env:MOSDAC_USERNAME = "your-mosdac-username"
+$env:MOSDAC_PASSWORD = "your-mosdac-password"
+python backend/run.py
+```
+Check the integration at `GET http://127.0.0.1:8000/api/data/mosdac/status` and
+fetch the latest payload with `POST http://127.0.0.1:8000/api/data/mosdac/sync`.
+Downloaded granules and processed observations are local-only and ignored by Git.
+
 ### 3. Run Automated Tests & Scientific Sanity Suite
 ```bash
 pytest tests/ -v

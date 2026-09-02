@@ -1,4 +1,20 @@
 {
+  "mosdac_live_satellite_dwr": {
+    "id": "mosdac_live_satellite_dwr",
+    "title": "ISRO MOSDAC Live DWR / Satellite Nowcast",
+    "category": "MOSDAC_REAL_DATA",
+    "description": "Observed MOSDAC HEM rainfall extracted from the latest available granule and coupled to the drainage digital twin.",
+    "peak_intensity_mmh": 85.0,
+    "storm_speed_kmh": 14.0,
+    "base_blockage_pct": 20.0,
+    "tide_level_m": 2.4,
+    "timeline_profile": [
+      {"t_min": 0, "intensity_pct": 0.35, "storm_center": [19.062, 72.870]},
+      {"t_min": 40, "intensity_pct": 1.0, "storm_center": [19.072, 72.878]},
+      {"t_min": 90, "intensity_pct": 0.5, "storm_center": [19.080, 72.886]},
+      {"t_min": 180, "intensity_pct": 0.08, "storm_center": [19.087, 72.892]}
+    ]
+  },
   "cloudburst_emergency_120mm": {
     "id": "cloudburst_emergency_120mm",
     "title": "Severe Cloudburst Deluge (120 mm/hr)",

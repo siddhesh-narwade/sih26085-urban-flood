@@ -6,7 +6,7 @@ Calculates safe, flood-resilient routes for Ambulances, Fire Trucks, Police, and
 
 import math
 import networkx as nx
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Tuple
 from app.config import settings
 from app.models.schemas import RouteRequest, RoutePlanResponse, RouteSegment
 

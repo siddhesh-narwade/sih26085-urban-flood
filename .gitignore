@@ -28,6 +28,10 @@ Thumbs.db
 *.pem
 credentials.json
 
+# Downloaded MOSDAC granules and processed live observations
+data/mosdac_raw/
+data/processed/mosdac_live_rainfall.json
+
 # IDE
 .idea/
 .vscode/

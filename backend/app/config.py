@@ -10,6 +10,11 @@ class SystemSettings:
     DEMO_MODE: bool = os.getenv("DEMO_MODE", "true").lower() == "true"
     HOST: str = os.getenv("HOST", "0.0.0.0")
     PORT: int = int(os.getenv("PORT", "8000"))
+
+    # Optional live MOSDAC Doppler Weather Radar JSON feed.
+    MOSDAC_DWR_URL: str = os.getenv("MOSDAC_DWR_URL", "")
+    MOSDAC_DWR_TOKEN: str = os.getenv("MOSDAC_DWR_TOKEN", "")
+    MOSDAC_DWR_TIMEOUT_SEC: int = int(os.getenv("MOSDAC_DWR_TIMEOUT_SEC", "30"))
     
     # File Paths
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -20,6 +25,14 @@ class SystemSettings:
     DEM_PATH = os.path.join(DATA_DIR, "dem_kurla_grid.json")
     POIS_PATH = os.path.join(DATA_DIR, "critical_infrastructure.geojson")
     SCENARIOS_PATH = os.path.join(DATA_DIR, "nowcast_scenarios.json")
+    MOSDAC_RAW_DIR = os.path.join(BASE_DIR, "data", "mosdac_raw")
+    MOSDAC_PROCESSED_PATH = os.path.join(DATA_DIR, "mosdac_live_rainfall.json")
+    MOSDAC_USERNAME: str = os.getenv("MOSDAC_USERNAME", "")
+    MOSDAC_PASSWORD: str = os.getenv("MOSDAC_PASSWORD", "")
+    MOSDAC_TOKEN_URL: str = "https://mosdac.gov.in/download_api/gettoken"
+    MOSDAC_SEARCH_URL: str = "https://mosdac.gov.in/apios/datasets.json"
+    MOSDAC_DOWNLOAD_URL: str = "https://mosdac.gov.in/download_api/download"
+    MOSDAC_DATASET_ID: str = os.getenv("MOSDAC_DATASET_ID", "3RIMG_L2B_HEM")
 
     # Simulation Default Parameters
     DEFAULT_TIME_STEP_MIN: int = 10

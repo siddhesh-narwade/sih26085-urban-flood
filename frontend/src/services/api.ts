@@ -58,6 +58,26 @@ export const api = {
     const res = await axios.get(`${API_BASE}/data/dem`);
     return res.data;
   },
+  getDwrStatus: async () => {
+    const res = await axios.get(`${API_BASE}/data/dwr/status`);
+    return res.data;
+  },
+  refreshDwrData: async () => {
+    const res = await axios.post(`${API_BASE}/data/dwr/refresh`);
+    return res.data;
+  },
+  getMosdacStatus: async () => {
+    const res = await axios.get(`${API_BASE}/data/mosdac/status`);
+    return res.data;
+  },
+  syncMosdac: async () => {
+    const res = await axios.post(`${API_BASE}/data/mosdac/sync`);
+    return res.data;
+  },
+  getMosdacGranules: async () => {
+    const res = await axios.get(`${API_BASE}/data/mosdac/granules`);
+    return res.data;
+  },
   getProvenance: async (): Promise<DataLayerMetadata[]> => {
     const res = await axios.get(`${API_BASE}/data/provenance`);
     return res.data;

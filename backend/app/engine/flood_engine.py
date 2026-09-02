@@ -14,6 +14,7 @@ from app.engine.hydrology import calculate_surface_runoff, spatial_rainfall_at_p
 from app.engine.drainage_graph import DrainageGraphEngine
 from app.engine.surface_flow import SurfaceFlowEngine
 from app.engine.risk_engine import evaluate_flood_risk
+from app.engine.mosdac_service import mosdac_service
 
 class FloodNowcastEngine:
     def __init__(self, roads_geojson: Dict[str, Any], drainage_nodes_geojson: Dict[str, Any], drainage_edges_geojson: Dict[str, Any], dem_payload: Dict[str, Any], scenarios_dict: Dict[str, Any]):
@@ -83,13 +84,21 @@ class FloodNowcastEngine:
                 mid_lon = (coords[0][0] + coords[1][0]) / 2.0
                 mid_lat = (coords[0][1] + coords[1][1]) / 2.0
                 
-                local_rain = spatial_rainfall_at_point(
-                    lat=mid_lat,
-                    lon=mid_lon,
-                    storm_center_lat=storm_center[0],
-                    storm_center_lon=storm_center[1],
-                    peak_intensity_mmh=curr_peak_intensity
-                )
+                if scenario_id.startswith("mosdac_"):
+                    local_rain = mosdac_service.get_road_rainfall_intensity(
+                        road_lat=mid_lat,
+                        road_lon=mid_lon,
+                        t_min=t_min,
+                        scenario_id=scenario_id,
+                    ) * request.rainfall_intensity_multiplier
+                else:
+                    local_rain = spatial_rainfall_at_point(
+                        lat=mid_lat,
+                        lon=mid_lon,
+                        storm_center_lat=storm_center[0],
+                        storm_center_lon=storm_center[1],
+                        peak_intensity_mmh=curr_peak_intensity
+                    )
                 road_rainfalls[r_id] = local_rain
                 
                 # Surface runoff generation
@@ -105,6 +114,9 @@ class FloodNowcastEngine:
                 if inlet_id and inlet_id in inlet_inflows:
                     # In standard urban design, inlets capture up to ~75% of approach flow before gutter bypass
                     inlet_inflows[inlet_id] += q_runoff * 0.80
+
+            if scenario_id.startswith("mosdac_"):
+                curr_peak_intensity = max(road_rainfalls.values(), default=0.0)
 
             # 2. Hydraulic Drainage Network Solution
             node_hydraulics, edge_hydraulics = self.drainage_engine.solve_hydraulic_flow(
