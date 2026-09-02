@@ -15,7 +15,7 @@ Unlike generic statistical or opaque AI dashboards, this system explicitly coupl
 |  [RAINFALL NOWCAST (0-3 HR)]    [TERRAIN DEM / LAND COVER]     [DRAINAGE NETWORK GRAPH (MUNICIPAL)]|
 |   - Spatial Grid Matrix (mm/hr)   - Elevation Gradients (Z)      - Nodes: Inlets, Manholes, Outfalls|
 |   - Temporal Cloudburst Curves    - Slope (S), Aspect, D8 Flow   - Edges: RCC Conduits, Channels    |
-|   - Real/Simulated Scenarios      - Imperviousness Index (C)     - Manning Roughness (n), Diameter D|
+|   - MOSDAC HEM + Simulated Scenarios - Imperviousness Index (C) - Manning Roughness (n), Diameter D|
 +-----------------------------------+------------------------------+----------------------------------+
                                     |                              |
                                     v                              v
@@ -73,17 +73,19 @@ npm run dev
 ```
 *UI Command Center runs at:* `http://localhost:5173`
 
-### Optional MOSDAC DWR feed
-The prototype keeps its simulated rainfall scenarios unless MOSDAC credentials
-are configured. Copy `.env.example` to a local environment file or set the
-variables directly in PowerShell before starting the backend:
+### MOSDAC DWR live data
+The backend can ingest the latest ISRO MOSDAC INSAT-3DR Hydro-Estimator
+(`3RIMG_L2B_HEM`) HDF5 granule, extract Mumbai pixels, cache the processed field,
+and feed those rainfall values into the live simulation scenario. Set credentials
+directly in PowerShell before starting the backend:
 ```powershell
 $env:MOSDAC_USERNAME = "your-mosdac-username"
 $env:MOSDAC_PASSWORD = "your-mosdac-password"
 python backend/run.py
 ```
-Check the integration at `GET http://127.0.0.1:8000/api/data/mosdac/status` and
-fetch the latest payload with `POST http://127.0.0.1:8000/api/data/mosdac/sync`.
+The UI button **Fetch Live MOSDAC Radar** syncs the latest granule and immediately
+runs `mosdac_live_satellite_dwr`. The API equivalents are `GET /api/data/mosdac/granules`,
+`POST /api/data/mosdac/sync`, and `GET /api/data/mosdac/status`.
 Downloaded granules and processed observations are local-only and ignored by Git.
 
 ### 3. Run Automated Tests & Scientific Sanity Suite
@@ -111,7 +113,7 @@ In strict compliance with scientific honesty guidelines:
 | **Critical POIs** | Vector GeoJSON | `REAL_PUBLIC_DATA` | Sion Hospital, Asian Heart, Fire Stations |
 | **DEM Elevation** | 100m Matrix (25x25) | `DERIVED_DATA` | Copernicus GLO-30 / SRTM with micro-topography |
 | **Drainage Network** | Directed Graph | `SIMULATED_DATA` | Calibrated municipal prototype network |
-| **Rainfall Nowcasts** | Spatial Moving Field | `SIMULATED_DATA` / `REAL_API` | 0-3hr Cloudburst profiles + Open-Meteo adapter |
+| **Rainfall Nowcasts** | HEM spatial field + scenarios | `REAL_API_DATA` / `SIMULATED_DATA` | ISRO MOSDAC HEM + controlled cloudburst profiles |
 
 ---
 

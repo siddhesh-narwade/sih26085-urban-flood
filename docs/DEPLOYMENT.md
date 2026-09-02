@@ -29,6 +29,17 @@ To scale this prototype to a full metropolis (e.g. Greater Mumbai, Chennai, or D
 3. **IMD Doppler Radar Nowcasts**: Ingest 10-minute IMD Colaba/Veravali Radar reflectivity grids to drive live spatial precipitation fields without human intervention.
 4. **Traffic Navigation Integration**: Expose `POST /api/route/plan` to state police 112 dispatch systems and municipal transit control centers.
 
+### MOSDAC configuration
+The prototype reads `MOSDAC_USERNAME`, `MOSDAC_PASSWORD`, and optionally
+`MOSDAC_DATASET_ID` from the process environment. The default dataset is
+`3RIMG_L2B_HEM`. The sync process writes downloaded HDF5 files to
+`data/mosdac_raw/` and the processed observation to
+`data/processed/mosdac_live_rainfall.json`; both paths are Git-ignored.
+
+For production, use a secret manager, scheduled ingestion worker, object storage,
+retry/backoff, audit logging, and a database rather than relying on a dashboard
+button for operational refreshes.
+
 ---
 
 ## 3. Docker Deployment Setup
@@ -40,3 +51,6 @@ docker-compose up --build -d
 ```
 - **Backend API**: `http://localhost:8000`
 - **Frontend Dashboard**: `http://localhost:80`
+
+For local development, use `http://localhost:5173` for the Vite dashboard and
+`http://127.0.0.1:8000/docs` for Swagger API inspection.

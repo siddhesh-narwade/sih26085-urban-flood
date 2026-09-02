@@ -11,6 +11,7 @@ The system is partitioned into cleanly decoupled modules following separation of
    ▼
 [FASTAPI REST BACKEND]
    │
+   ├── [MOSDAC DWR Adapter]    --> Authentication, catalog search, HDF5 extraction/cache
    ├── [Hydrology Engine]       --> Modified Rational Runoff & Spatial Rain Matrix
    ├── [Hydraulic Graph Engine] --> Manning full-pipe capacity & Surcharge Solver
    ├── [Surface Flow Engine]    --> 2D Topographic DEM Overland Accumulation
@@ -31,13 +32,14 @@ sih26085_urban_flood/
 │   │   │   ├── simulation_routes.py  # Simulation execution & XAI endpoints
 │   │   │   ├── drainage_routes.py    # Nodes, edges, and real-time status
 │   │   │   ├── routing_routes.py     # Multi-vehicle emergency routing
-│   │   │   └── data_routes.py        # Provenance, POIs, and system health
+│   │   │   └── data_routes.py        # Provenance, POIs, health, and MOSDAC endpoints
 │   │   ├── engine/
 │   │   │   ├── hydrology.py          # Runoff generation & storm decay
 │   │   │   ├── hydraulic.py          # Manning formula & blockage degradation
 │   │   │   ├── drainage_graph.py     # NetworkX directed drainage graph
 │   │   │   ├── surface_flow.py       # DEM depression overland routing
 │   │   │   ├── flood_engine.py       # 0-3hr simulation master coordinator
+│   │   │   ├── mosdac_service.py      # MOSDAC auth, HDF5 parsing, live rainfall cache
 │   │   │   ├── risk_engine.py        # Multi-factor risk classification
 │   │   │   ├── explainability.py     # XAI causal factor decomposition
 │   │   │   └── routing.py            # Dynamic clearance-weighted routing
@@ -76,3 +78,15 @@ sih26085_urban_flood/
 - **Surface Mass-Balance Time Stepping**: $O(N_{\text{roads}} \times T_{\text{steps}})$, solving full 18 timesteps in $< 20\text{ ms}$.
 - **Safe Dynamic Routing**: $O(|E_{\text{road}}| + |V_{\text{road}}| \log |V_{\text{road}}|)$ using Fibonacci heap Dijkstra, responding in $< 10\text{ ms}$.
 - Total end-to-end nowcast execution takes **$< 100\text{ ms}$**, enabling instantaneous What-If scenario experimentation during municipal decision-making.
+
+## 4. Live MOSDAC Data Flow
+
+```text
+MOSDAC catalog -> authenticate -> download HDF5 -> extract HEM Mumbai pixels
+   -> cache processed field -> nearest-sample road rainfall
+   -> runoff + drainage hydraulics -> flood depth, risk, alerts, and routing
+```
+
+The live adapter is isolated from the hydraulic solver. If no credentials or
+cached observation are available, controlled simulated scenarios remain
+available without mislabeling simulated values as observations.

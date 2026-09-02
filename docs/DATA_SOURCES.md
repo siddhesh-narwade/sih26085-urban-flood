@@ -40,8 +40,15 @@ To maintain strict scientific honesty and prevent fabrication of municipal datas
 - **Edge Entities**: 19 conduits (RCC pipes with diameters $\varnothing 600\text{mm} - 1800\text{mm}$, Manning roughness $n = 0.012 - 0.014$, design slopes $S \ge 0.15\%$).
 - **Notice**: In operational municipal deployment, these prototype parameters are directly replaceable by MCGM SWD (Storm Water Drains) GIS records without modifying any core solver code.
 
-### Layer 5: 0–3 Hour Rainfall Nowcast Scenarios
-- **Classification**: `SIMULATED_DATA / REAL_API_ADAPTER`
-- **Source**: Convective Cloudburst Profiles (calibrated to historical Mumbai July 26 deluge & NCMRWF radar storm cell tracks) + Open-Meteo live meteorology fallback adapter.
-- **Temporal Profile**: 10-minute intervals over $0-180\text{ minutes}$ (0-3 hour nowcasting horizon).
-- **Scenarios**: Extreme Cloudburst (120 mm/hr), Heavy Monsoon (75 mm/hr), Baseline Monsoon (35 mm/hr), Tidal Lock Compound Event, Clogged Trunk Crisis.
+### Layer 5: MOSDAC DWR / Satellite Rainfall
+- **Classification**: `REAL_API_DATA`
+- **Source**: ISRO / SAC MOSDAC, dataset `3RIMG_L2B_HEM`.
+- **Product**: INSAT-3DR Level-2B Hydro-Estimator precipitation in HDF5 format.
+- **Processing**: The newest catalog entry is downloaded after authentication; `HEM`, `Latitude`, and `Longitude` are masked to the Mumbai study area and cached locally.
+- **Application**: The live scenario selects the nearest extracted rainfall sample for each road segment, so the map, runoff, hydraulics, and timeline use the same observation.
+- **Limitation**: A valid granule may report zero rainfall over Mumbai. That is an observation, not a sync failure.
+
+### Layer 6: Controlled 0–3 Hour Stress Scenarios
+- **Classification**: `SIMULATED_DATA`
+- **Source**: Repeatable cloudburst, heavy monsoon, tidal-lock, and blockage profiles for engineering stress testing and demonstrations.
+- **Purpose**: These scenarios remain available so surcharge, inundation, and safe-routing behavior is reproducible when the current live observation is dry.

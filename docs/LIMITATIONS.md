@@ -17,6 +17,7 @@ In accordance with scientific rigor and SIH guidelines, the known engineering bo
 ---
 
 ## 3. Operational Prerequisites for Field Deployment
-- Direct API integration with IMD Doppler Weather Radar (DWR) NetCDF feeds.
+- MOSDAC credentials and network access are required for live INSAT-3DR HEM/DWR granule downloads; the dashboard retains controlled scenarios when no live observation is available.
+- Direct API integration with additional IMD Doppler Weather Radar (DWR) NetCDF feeds.
 - Integration with municipal tidal gauge stations at Mahim Creek / Mithi River mouth.
 - High-resolution Airborne LiDAR ($< 0.5\text{m}$ vertical accuracy) for millimeter-precise curb-level pooling.

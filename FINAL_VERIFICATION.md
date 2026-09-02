@@ -24,8 +24,8 @@
 ---
 
 ## 3. Automated Test Suite Summary
-- **Total Tests Run**: `28`
-- **Passed**: `28`
+- **Total Tests Run**: `32`
+- **Passed**: `32`
 - **Failed**: `0`
 - **Skipped**: `0`
 - **Success Rate**: **100.0%**
@@ -61,12 +61,14 @@
 - **Drainage Digital Twin View**: Real-time Manning telemetry and pipe utilization table operational.
 - **Explainable AI (XAI) Modal**: Factor decomposition for LBS Marg and other flood hotspots functioning correctly.
 - **Emergency Safe Routing**: Dynamic rerouting for Ambulances, Fire Trucks, Police, and Public Transit verified.
+- **MOSDAC DWR Ingestion**: Authenticated catalog search, HDF5 download, Mumbai spatial extraction, local caching, and live-scenario binding verified.
 
 ---
 
 ## 6. Known Remaining Limitations
 - Complete underground municipal drainage drawings are restricted; prototype uses physically calibrated synthetic conduits based on CPHEEO engineering codes.
 - Satellite DEM (Copernicus 30m) interpolated with micro-topography; production deployment recommends Airborne LiDAR ($< 0.5\text{m}$).
+- MOSDAC credentials are required for live downloads and must be supplied through environment variables; the committed repository contains no credentials or live granules.
 
 ---
 
