@@ -61,10 +61,26 @@ class MOSDACService:
         try:
             response = requests.get(settings.MOSDAC_SEARCH_URL, params={"datasetId": dataset_id or settings.MOSDAC_DATASET_ID, "count": count}, timeout=10)
             response.raise_for_status()
-            return response.json().get("entries", [])
+            entries = response.json().get("entries", [])
+            return entries or self._local_granule_entries(count)
         except (requests.RequestException, ValueError) as exc:
             logger.warning("MOSDAC catalog search failed: %s", exc)
-            return []
+            return self._local_granule_entries(count)
+
+    def _local_granule_entries(self, count: int) -> List[Dict[str, Any]]:
+        local_files = sorted(
+            glob.glob(os.path.join(self.raw_dir, "*.h5")),
+            key=os.path.getmtime,
+            reverse=True,
+        )
+        return [
+            {
+                "id": index,
+                "identifier": os.path.basename(file_path),
+                "source": "LOCAL_MOSDAC_CACHE",
+            }
+            for index, file_path in enumerate(local_files[:count], start=1)
+        ]
 
     def download_granule(self, record_id: int, identifier: str) -> Optional[str]:
         if not self.authenticate():
@@ -90,7 +106,7 @@ class MOSDACService:
 
     def parse_hdf5_granule(self, file_path: str) -> Dict[str, Any]:
         if h5py is None:
-            raise RuntimeError("Install h5py to parse MOSDAC HDF5 data")
+            raise RuntimeError("MOSDAC HDF5 support is unavailable. Install backend requirements with: pip install -r backend/requirements.txt")
         with h5py.File(file_path, "r") as hdf:
             hem_key = "HEM" if "HEM" in hdf else next(key for key in hdf.keys() if any(word in key.upper() for word in ("RAIN", "PRECIP", "MAXZ")))
             hem = hdf[hem_key]
@@ -110,12 +126,17 @@ class MOSDACService:
     def sync_live_data(self) -> Dict[str, Any]:
         entries = self.search_latest_granules(count=3)
         file_path = None
+        used_local_cache = bool(entries and entries[0].get("source") == "LOCAL_MOSDAC_CACHE")
         if entries and self.username and self.password:
+            cached_path = os.path.join(self.raw_dir, entries[0]["identifier"])
+            if os.path.exists(cached_path) and os.path.getsize(cached_path) > 100000:
+                used_local_cache = True
             file_path = self.download_granule(entries[0]["id"], entries[0]["identifier"])
         if not file_path:
             local_files = glob.glob(os.path.join(self.raw_dir, "*.h5"))
             if local_files:
                 file_path = max(local_files, key=os.path.getmtime)
+                used_local_cache = True
         if not file_path:
             if not entries:
                 raise RuntimeError("MOSDAC catalog returned no granules")
@@ -125,6 +146,7 @@ class MOSDACService:
         parsed = self.parse_hdf5_granule(file_path)
         if entries:
             parsed["entry_metadata"] = entries[0]
+        parsed["acquisition_mode"] = "LOCAL_MOSDAC_CACHE" if used_local_cache else "LIVE_MOSDAC_CATALOG"
         self.latest_rainfall_field = parsed
         with open(self.processed_path, "w", encoding="utf-8") as data_file:
             json.dump(parsed, data_file, indent=2)
@@ -133,7 +155,9 @@ class MOSDACService:
     def get_road_rainfall_intensity(self, road_lat: float, road_lon: float, t_min: int, scenario_id: Optional[str] = None) -> float:
         if self.latest_rainfall_field is None:
             self._load_cached_processed_data()
-        if scenario_id == "mosdac_live_satellite_dwr" and self.latest_rainfall_field:
+        if scenario_id == "mosdac_live_satellite_dwr":
+            if not self.latest_rainfall_field:
+                return 0.0
             samples = self.latest_rainfall_field.get("spatial_samples", [])
             if samples:
                 nearest = min(

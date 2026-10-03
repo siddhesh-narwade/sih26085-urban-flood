@@ -65,6 +65,11 @@ python run.py
 *API server runs at:* `http://127.0.0.1:8000`  
 *Swagger Documentation:* `http://127.0.0.1:8000/docs`
 
+For the complete local startup with live MOSDAC credentials, run
+`start_system.bat` from the repository root. It securely prompts for the
+MOSDAC username and password, then starts both backend and frontend processes.
+The password is held only in the child process environment and is not saved.
+
 ### 2. Launch Frontend (React + Vite + Leaflet)
 ```bash
 cd frontend
@@ -72,6 +77,24 @@ npm install
 npm run dev
 ```
 *UI Command Center runs at:* `http://localhost:5173`
+
+### Free Satellite / Aerial Basemap
+
+The Leaflet map keeps OpenStreetMap as the street basemap and provides a selectable
+`Satellite / Aerial View` using Esri World Imagery tiles:
+
+```text
+https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}
+```
+
+No API key is required for this student prototype. Attribution is displayed on the
+map as required by the provider. The requested OpenAerialMap mosaic endpoint was
+checked for the BKC area and returned `204 No Content` for a representative zoom-14
+tile; its catalog query did not return a usable BKC item, so it is not used as the
+primary source. If Esri imagery fails, the map automatically returns to OpenStreetMap;
+flood, rainfall, drainage, POI, and route overlays remain separate. Esri imagery is
+background imagery, not live video or real-time flood detection, and public tile usage
+remains subject to Esri service terms and reasonable-rate limits.
 
 ### MOSDAC DWR live data
 The backend can ingest the latest ISRO MOSDAC INSAT-3DR Hydro-Estimator

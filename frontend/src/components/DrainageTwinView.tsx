@@ -34,12 +34,12 @@ export const DrainageTwinView: React.FC<DrainageTwinViewProps> = ({
     : 0;
 
   return (
-    <div className="h-full bg-[#0a0f1d] p-6 overflow-y-auto font-sans space-y-6">
+    <div className="h-full bg-[#060b16] p-6 overflow-y-auto font-sans space-y-6 command-enter">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <div className="flex items-center space-x-2 text-sky-400">
+            <div className="flex items-center space-x-2 text-cyan-300">
               <Activity className="w-5 h-5" />
               <h2 className="font-extrabold text-base tracking-wider uppercase">
                 Underground Stormwater Drainage Digital Twin
@@ -50,7 +50,7 @@ export const DrainageTwinView: React.FC<DrainageTwinViewProps> = ({
             </p>
           </div>
 
-          <div className="flex items-center space-x-3 bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-xs font-mono">
+          <div className="command-panel px-4 py-2 rounded-xl text-xs font-mono">
             <span className="text-slate-400">Network Utilization:</span>
             <span className={`font-bold ${avgUtil > 80 ? 'text-pink-400' : 'text-emerald-400'}`}>
               {avgUtil.toFixed(1)}%
@@ -60,19 +60,19 @@ export const DrainageTwinView: React.FC<DrainageTwinViewProps> = ({
 
         {/* Top Summary Metrics */}
         <div className="grid grid-cols-4 gap-4 font-mono text-center">
-          <div className="bg-[#0f172a] border border-slate-800 p-4 rounded-2xl shadow-xl">
+          <div className="metric-card metric-teal command-panel p-4">
             <div className="text-[10px] uppercase text-slate-400">Active Inlets & Manholes</div>
             <div className="text-2xl font-bold text-white mt-1">{nodeStats.length}</div>
             <div className="text-[10px] text-slate-500 mt-1">18 Monitored Junctions</div>
           </div>
 
-          <div className="bg-[#0f172a] border border-slate-800 p-4 rounded-2xl shadow-xl">
+          <div className="metric-card metric-cyan command-panel p-4">
             <div className="text-[10px] uppercase text-slate-400">Stormwater Conduits</div>
             <div className="text-2xl font-bold text-sky-400 mt-1">{edgeStats.length}</div>
             <div className="text-[10px] text-slate-500 mt-1">Ø600 – 1800mm RCC</div>
           </div>
 
-          <div className="bg-[#0f172a] border border-slate-800 p-4 rounded-2xl shadow-xl">
+          <div className="metric-card metric-danger command-panel command-panel-danger p-4">
             <div className="text-[10px] uppercase text-slate-400">Surcharging Nodes</div>
             <div className={`text-2xl font-bold mt-1 ${surchargingNodes.length > 0 ? 'text-pink-400 animate-pulse' : 'text-emerald-400'}`}>
               {surchargingNodes.length}
@@ -80,7 +80,7 @@ export const DrainageTwinView: React.FC<DrainageTwinViewProps> = ({
             <div className="text-[10px] text-slate-500 mt-1">Active Backflow Outlets</div>
           </div>
 
-          <div className="bg-[#0f172a] border border-slate-800 p-4 rounded-2xl shadow-xl">
+          <div className="metric-card metric-warning command-panel command-panel-amber p-4">
             <div className="text-[10px] uppercase text-slate-400">Overloaded Trunk Lines</div>
             <div className={`text-2xl font-bold mt-1 ${overloadedEdges.length > 0 ? 'text-amber-400' : 'text-emerald-400'}`}>
               {overloadedEdges.length}
@@ -91,7 +91,7 @@ export const DrainageTwinView: React.FC<DrainageTwinViewProps> = ({
 
         {/* Active Surcharge Alert Callout (if any) */}
         {surchargingNodes.length > 0 && (
-          <div className="p-4 rounded-2xl bg-pink-500/10 border border-pink-500/40 text-xs font-mono text-pink-300 space-y-1 animate-in fade-in duration-300">
+          <div className="p-4 rounded-2xl bg-pink-500/10 border border-pink-500/40 text-xs font-mono text-pink-300 space-y-1 command-enter">
             <div className="flex items-center space-x-2 font-bold text-sm text-pink-400">
               <AlertTriangle className="w-4 h-4" />
               <span>HYDRAULIC SURCHARGE ACTIVE — WATER REVERSING TO SURFACE</span>
@@ -103,7 +103,7 @@ export const DrainageTwinView: React.FC<DrainageTwinViewProps> = ({
         )}
 
         {/* Conduits Hydraulics Table */}
-        <div className="bg-[#0f172a] border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+        <div className="command-panel rounded-2xl overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-800 flex justify-between items-center">
             <h3 className="font-bold text-sm text-white uppercase tracking-wider font-mono flex items-center space-x-2">
               <Gauge className="w-4 h-4 text-sky-400" />

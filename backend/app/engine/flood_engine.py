@@ -229,13 +229,14 @@ class FloodNowcastEngine:
 
         exec_duration_ms = round((time.time() - start_exec_time) * 1000, 1)
 
+        observed_peak = max((step["current_rainfall_peak_mmh"] for step in timeline_results), default=0.0)
         result_payload = {
             "metadata": {
                 "scenario_id": scenario_id,
                 "scenario_title": scenario["title"],
-                "scenario_base_intensity_mmh": scenario["peak_intensity_mmh"],
+                "scenario_base_intensity_mmh": observed_peak if scenario_id == "mosdac_live_satellite_dwr" else scenario["peak_intensity_mmh"],
                 "rainfall_intensity_multiplier": request.rainfall_intensity_multiplier,
-                "applied_peak_intensity_mmh": round(scenario["peak_intensity_mmh"] * request.rainfall_intensity_multiplier, 1),
+                "applied_peak_intensity_mmh": round(observed_peak * request.rainfall_intensity_multiplier, 1) if scenario_id == "mosdac_live_satellite_dwr" else round(scenario["peak_intensity_mmh"] * request.rainfall_intensity_multiplier, 1),
                 "execution_time_ms": exec_duration_ms,
                 "total_timesteps": len(time_steps),
                 "horizon_minutes": horizon_min,

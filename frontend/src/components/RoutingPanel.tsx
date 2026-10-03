@@ -63,15 +63,15 @@ export const RoutingPanel: React.FC<RoutingPanelProps> = ({
   };
 
   const vehicleOptions = [
-    { id: 'AMBULANCE', name: 'Ambulance', clearance: '20 cm', icon: '🚑' },
-    { id: 'FIRE_SERVICE', name: 'Fire Engine', clearance: '45 cm', icon: '🚒' },
-    { id: 'POLICE', name: 'Police Patrol', clearance: '25 cm', icon: '🚓' },
-    { id: 'PUBLIC_TRANSIT', name: 'Public Bus', clearance: '35 cm', icon: '🚌' },
-    { id: 'COMMUTER', name: 'Commuter Car', clearance: '15 cm', icon: '🚗' },
+    { id: 'AMBULANCE', name: 'Ambulance', clearance: '20 cm', icon: Truck },
+    { id: 'FIRE_SERVICE', name: 'Fire Engine', clearance: '45 cm', icon: Truck },
+    { id: 'POLICE', name: 'Police Patrol', clearance: '25 cm', icon: ShieldCheck },
+    { id: 'PUBLIC_TRANSIT', name: 'Public Bus', clearance: '35 cm', icon: Bus },
+    { id: 'COMMUTER', name: 'Commuter Car', clearance: '15 cm', icon: Car },
   ];
 
   return (
-    <div className="h-full bg-[#0a0f1d] p-6 overflow-y-auto font-sans flex flex-col justify-between">
+    <div className="h-full bg-[#060b16] p-6 overflow-y-auto font-sans flex flex-col justify-between command-enter">
       <div className="space-y-6 max-w-4xl mx-auto w-full">
         {/* Header */}
         <div>
@@ -87,7 +87,7 @@ export const RoutingPanel: React.FC<RoutingPanelProps> = ({
         </div>
 
         {/* Input Controls Card */}
-        <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
+        <div className="command-panel command-panel-cyan rounded-2xl p-5 space-y-4">
           {/* Vehicle Selector */}
           <div className="space-y-2">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-300 font-mono">
@@ -104,7 +104,7 @@ export const RoutingPanel: React.FC<RoutingPanelProps> = ({
                       : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
                   }`}
                 >
-                  <div className="text-xl mb-1">{v.icon}</div>
+                  <div className="text-cyan-300 mb-1 flex justify-center"><v.icon className="w-5 h-5" /></div>
                   <div className="text-xs font-bold">{v.name}</div>
                   <div className="text-[10px] text-sky-400 font-mono mt-0.5">Max: {v.clearance}</div>
                 </button>
@@ -151,7 +151,7 @@ export const RoutingPanel: React.FC<RoutingPanelProps> = ({
           <button
             onClick={handleCalculateRoute}
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-sky-500/20 transition-all flex items-center justify-center space-x-2"
+            className="route-cta w-full py-3.5 rounded-xl text-white font-extrabold text-xs uppercase tracking-[0.08em] transition-all flex items-center justify-center space-x-2"
           >
             {loading ? (
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -189,7 +189,7 @@ export const RoutingPanel: React.FC<RoutingPanelProps> = ({
             {/* Side-by-Side Cards */}
             <div className="grid grid-cols-2 gap-4">
               {/* Safe Route Card */}
-              <div className="bg-[#0f172a] border border-emerald-500/40 rounded-2xl p-5 shadow-xl space-y-3">
+                <div className="command-panel command-panel-teal rounded-2xl p-5 space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="flex items-center space-x-1.5 font-bold text-emerald-400 text-xs uppercase font-mono">
                     <ShieldCheck className="w-4 h-4" />
@@ -201,15 +201,15 @@ export const RoutingPanel: React.FC<RoutingPanelProps> = ({
                 </div>
 
                 <div className="grid grid-cols-3 gap-2 font-mono text-center pt-2">
-                  <div className="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+                  <div className="metric-card metric-teal bg-slate-900 p-2.5 rounded-xl border border-slate-800">
                     <div className="text-[10px] text-slate-400">Distance</div>
                     <div className="text-sm font-bold text-white mt-0.5">{(routePlan.safe_route_distance_m / 1000).toFixed(2)} km</div>
                   </div>
-                  <div className="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+                  <div className="metric-card metric-teal bg-slate-900 p-2.5 rounded-xl border border-slate-800">
                     <div className="text-[10px] text-slate-400">ETA</div>
                     <div className="text-sm font-bold text-emerald-400 mt-0.5">{routePlan.safe_route_eta_min} min</div>
                   </div>
-                  <div className="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+                  <div className="metric-card metric-teal bg-slate-900 p-2.5 rounded-xl border border-slate-800">
                     <div className="text-[10px] text-slate-400">Max Depth</div>
                     <div className="text-sm font-bold text-emerald-400 mt-0.5">{routePlan.safe_route_max_depth_cm} cm</div>
                   </div>
@@ -228,7 +228,7 @@ export const RoutingPanel: React.FC<RoutingPanelProps> = ({
               </div>
 
               {/* Direct Route Card */}
-              <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
+              <div className="command-panel rounded-2xl p-5 space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="flex items-center space-x-1.5 font-bold text-slate-400 text-xs uppercase font-mono">
                     <Clock className="w-4 h-4" />
@@ -242,15 +242,15 @@ export const RoutingPanel: React.FC<RoutingPanelProps> = ({
                 </div>
 
                 <div className="grid grid-cols-3 gap-2 font-mono text-center pt-2">
-                  <div className="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+                  <div className="metric-card metric-info bg-slate-900 p-2.5 rounded-xl border border-slate-800">
                     <div className="text-[10px] text-slate-400">Distance</div>
                     <div className="text-sm font-bold text-white mt-0.5">{(routePlan.direct_route_distance_m / 1000).toFixed(2)} km</div>
                   </div>
-                  <div className="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+                  <div className="metric-card metric-info bg-slate-900 p-2.5 rounded-xl border border-slate-800">
                     <div className="text-[10px] text-slate-400">ETA (Normal)</div>
                     <div className="text-sm font-bold text-slate-300 mt-0.5">{routePlan.direct_route_eta_min} min</div>
                   </div>
-                  <div className="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+                  <div className="metric-card metric-danger bg-slate-900 p-2.5 rounded-xl border border-slate-800">
                     <div className="text-[10px] text-slate-400">Max Depth</div>
                     <div className="text-sm font-bold text-red-400 mt-0.5">{routePlan.direct_route_max_depth_cm} cm</div>
                   </div>

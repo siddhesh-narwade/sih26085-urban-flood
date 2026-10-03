@@ -11,12 +11,17 @@ This step-by-step walkthrough guides presenters through the winning 5-minute SIH
    > *"Most flood dashboards treat AI as an opaque statistical black box that ignores civil infrastructure. Our system explicitly couples atmospheric rainfall nowcasting, high-resolution DEM terrain gradients, and underground directed stormwater pipe hydraulics (Manning's equation) to forecast street-level flood depth in centimeters and dispatch emergency services on safe routes."*
 
 ### Optional live MOSDAC proof point
-Before the scripted stress test, open `http://127.0.0.1:8000/docs` and run:
-1. `GET /api/data/mosdac/granules` to show current ISRO MOSDAC catalog entries.
-2. `POST /api/data/mosdac/sync` to download and parse the newest HDF5 granule.
-3. `GET /api/data/mosdac/status` to show the synced filename and `VALID_OBSERVATIONAL_DATA`.
+Use this short evidence sequence before the scripted stress test:
+1. Open the app at `http://localhost:5173` and click **Data Provenance**.
+2. Open **What-If Simulator**, click **Fetch Live MOSDAC Radar**, and wait for the live scenario simulation to finish.
+3. Return to **Data Provenance** and click the refresh icon in **MOSDAC DWR Evidence**.
+4. Point to the evidence fields: `Acquisition`, HDF5 `Granule`, `Parsed At`, `Rainfall`, dataset ID, and `VALID_OBSERVATIONAL_DATA`.
+5. For a second, independently verifiable view, open `http://127.0.0.1:8000/docs` and run `GET /api/data/mosdac/status`. The browser response is the same backend payload used by the UI.
 
-Explain that the live granule is the observational input, while the controlled cloudburst scenario is used for a repeatable demonstration of flooding, surcharge, and routing decisions.
+Suggested narration:
+> "This is not a hard-coded rainfall label. The frontend calls the FastAPI sync endpoint, the backend authenticates against the MOSDAC catalog, downloads the HDF5 granule, parses the HEM precipitation field, extracts the Kurla-BKC bounding box, persists the result, and then runs the drainage simulation from that parsed field. The evidence card exposes the exact file, timestamp, dataset, and parser status."
+
+The `Acquisition` value is deliberately explicit: `LIVE_MOSDAC_CATALOG` means the latest catalog/download path was used; `LOCAL_MOSDAC_CACHE` means the same parsed HDF5 pipeline used a bundled cached granule because the public service was unavailable. Do not call the latter live during judging. Explain that the observational granule is the real input, while the controlled cloudburst scenario is used for a repeatable demonstration of flooding, surcharge, and routing decisions.
 
 ---
 

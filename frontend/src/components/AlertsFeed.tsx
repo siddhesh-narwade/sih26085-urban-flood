@@ -20,7 +20,7 @@ export const AlertsFeed: React.FC<AlertsFeedProps> = ({
   );
 
   return (
-    <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col h-full font-sans">
+    <div className="command-panel p-4 flex flex-col h-full font-sans">
       <div className="flex items-center space-x-2 text-amber-400 pb-3 border-b border-slate-800">
         <Bell className="w-4 h-4" />
         <h3 className="font-bold text-xs uppercase tracking-wider font-mono">

@@ -15,8 +15,9 @@ import {
   SimulationResult, 
   TimelineStep, 
   RoutePlanResponse, 
-  POIFeature 
+  POIFeature
 } from '../types';
+import { MosdacStatus } from '../services/api';
 
 interface MapViewProps {
   roadsGeoJSON: any;
@@ -24,6 +25,7 @@ interface MapViewProps {
   drainageEdgesGeoJSON: any;
   poisGeoJSON: any;
   simulation: SimulationResult | null;
+  mosdacStatus: MosdacStatus | null;
   currentStepIndex: number;
   selectedRoute: RoutePlanResponse | null;
   onSelectRoad: (roadId: string) => void;
@@ -37,6 +39,7 @@ export const MapView: React.FC<MapViewProps> = ({
   drainageEdgesGeoJSON,
   poisGeoJSON,
   simulation,
+  mosdacStatus,
   currentStepIndex,
   selectedRoute,
   onSelectRoad,
@@ -60,7 +63,7 @@ export const MapView: React.FC<MapViewProps> = ({
   const [showRadar, setShowRadar] = useState<boolean>(true);
   const [showPOIs, setShowPOIs] = useState<boolean>(true);
   const [showRoute, setShowRoute] = useState<boolean>(true);
-  const [basemapStyle, setBasemapStyle] = useState<string>('carto_dark');
+  const [basemapStyle, setBasemapStyle] = useState<string>('esri_satellite');
 
   const TILE_PROVIDERS: Record<string, { name: string; url: string; options: L.TileLayerOptions }> = {
     carto_dark: {
@@ -79,9 +82,9 @@ export const MapView: React.FC<MapViewProps> = ({
       options: { maxZoom: 19, maxNativeZoom: 16, attribution: 'Tiles &copy; Esri' }
     },
     esri_satellite: {
-      name: '🛰️ Esri Satellite HD (Free)',
+      name: '🛰️ Satellite / Aerial View (Free)',
       url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      options: { maxZoom: 19, maxNativeZoom: 18, attribution: 'Tiles &copy; Esri' }
+      options: { maxZoom: 19, maxNativeZoom: 18, attribution: 'Imagery &copy; Esri, Maxar, Earthstar Geographics, and the GIS User Community' }
     },
     esri_streets: {
       name: '🏙️ Esri World Street Map (Free)',
@@ -123,8 +126,7 @@ export const MapView: React.FC<MapViewProps> = ({
     const map = L.map(mapContainerRef.current, {
       center: [19.0725, 72.8750],
       zoom: 14,
-      zoomControl: false,
-      attributionControl: false
+      zoomControl: false
     });
 
     L.control.zoom({ position: 'bottomright' }).addTo(map);
@@ -153,6 +155,12 @@ export const MapView: React.FC<MapViewProps> = ({
 
     const provider = TILE_PROVIDERS[basemapStyle] || TILE_PROVIDERS.esri_dark;
     const newTileLayer = L.tileLayer(provider.url, provider.options).addTo(mapInstanceRef.current);
+    newTileLayer.once('tileerror', () => {
+      if (basemapStyle === 'esri_satellite' && mapInstanceRef.current) {
+        console.warn('Satellite imagery unavailable; keeping the OpenStreetMap street layer active.');
+        setBasemapStyle('osm');
+      }
+    });
     tileLayerRef.current = newTileLayer;
   }, [basemapStyle]);
 
@@ -366,48 +374,54 @@ export const MapView: React.FC<MapViewProps> = ({
     });
   }, [poisGeoJSON, showPOIs]);
 
-  // 5. Render Moving Storm Radar Overlay
+  // Show observed MOSDAC cells for the live scenario and the modeled storm core for simulations.
   useEffect(() => {
     if (!mapInstanceRef.current || !radarLayerRef.current) return;
-
     radarLayerRef.current.clearLayers();
+    if (!showRadar) return;
 
-    if (!showRadar || !currentStep?.storm_center) return;
-
-    const [stormLat, stormLon] = currentStep.storm_center;
-    const peakRain = currentStep.current_rainfall_peak_mmh || 0;
-
-    if (peakRain > 5.0) {
-      const stormRadiusM = Math.min(3000, Math.max(1200, peakRain * 22));
-
-      const radarCircle = L.circle([stormLat, stormLon], {
-        radius: stormRadiusM,
-        fillColor: '#0ea5e9',
-        fillOpacity: 0.18,
-        color: '#38bdf8',
-        weight: 1.5,
-        dashArray: '4, 6'
-      });
-
-      const epicenterCircle = L.circleMarker([stormLat, stormLon], {
-        radius: 12,
-        fillColor: '#38bdf8',
-        color: '#ffffff',
-        weight: 2,
-        fillOpacity: 0.7
-      });
-
-      radarCircle.bindTooltip(
-        `<div class="p-1 font-mono text-xs text-sky-300 font-bold">
-          🌧️ Mesoscale Convective Storm Core: ${peakRain} mm/hr
-        </div>`,
-        { sticky: true }
-      );
-
-      radarLayerRef.current.addLayer(radarCircle);
-      radarLayerRef.current.addLayer(epicenterCircle);
+    if (simulation?.metadata.scenario_id !== 'mosdac_live_satellite_dwr' && currentStep?.storm_center) {
+      const [stormLat, stormLon] = currentStep.storm_center;
+      const peakRain = currentStep.current_rainfall_peak_mmh || 0;
+      if (peakRain > 0) {
+        const simulatedCircle = L.circle([stormLat, stormLon], {
+          radius: Math.min(3000, Math.max(1200, peakRain * 22)),
+          fillColor: '#0ea5e9',
+          fillOpacity: 0.18,
+          color: '#38bdf8',
+          weight: 1.5,
+          dashArray: '4, 6'
+        });
+        const simulatedCore = L.circleMarker([stormLat, stormLon], {
+          radius: 12,
+          fillColor: '#38bdf8',
+          color: '#ffffff',
+          weight: 2,
+          fillOpacity: 0.7
+        });
+        simulatedCircle.bindTooltip(`Simulated rainfall radar: ${peakRain} mm/hr`, { sticky: true });
+        radarLayerRef.current.addLayer(simulatedCircle);
+        radarLayerRef.current.addLayer(simulatedCore);
+      }
+      return;
     }
-  }, [currentStep, showRadar]);
+
+    const observedSamples = mosdacStatus?.spatial_samples?.filter((sample) => sample.rain_mmh > 0) || [];
+    if (!observedSamples.length) return;
+
+    observedSamples.forEach((sample) => {
+      const radius = Math.min(900, Math.max(250, sample.rain_mmh * 30));
+      const observedCell = L.circle([sample.lat, sample.lon], {
+        radius,
+        fillColor: '#22c55e',
+        fillOpacity: 0.2,
+        color: '#86efac',
+        weight: 1
+      });
+      observedCell.bindTooltip(`Observed MOSDAC rainfall: ${sample.rain_mmh} mm/hr`, { sticky: true });
+      radarLayerRef.current?.addLayer(observedCell);
+    });
+  }, [currentStep, mosdacStatus, showRadar, simulation]);
 
   // 6. Render Active Routing Overlay with Source, Destination, and 2 Efficient Paths in Different Colors
   useEffect(() => {
@@ -637,7 +651,7 @@ export const MapView: React.FC<MapViewProps> = ({
         <label className="flex items-center justify-between space-x-3 cursor-pointer text-slate-300 hover:text-white">
           <span className="flex items-center space-x-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-indigo-400" />
-            <span>Precipitation Radar Core</span>
+            <span>Precipitation Radar</span>
           </span>
           <input
             type="checkbox"
@@ -646,6 +660,15 @@ export const MapView: React.FC<MapViewProps> = ({
             className="rounded bg-slate-800 border-slate-700 text-sky-500 focus:ring-0"
           />
         </label>
+
+        <div className="border-t border-slate-800 pt-2 text-[10px] space-y-1">
+          <div className="flex justify-between gap-3"><span className="text-slate-500">Observed now</span><span className="text-emerald-300 font-bold">{mosdacStatus ? `${mosdacStatus.max_rain_mmh} mm/hr` : 'Loading...'}</span></div>
+          {simulation?.metadata.scenario_id === 'mosdac_live_satellite_dwr' ? (
+            <div className="text-slate-500">{mosdacStatus?.max_rain_mmh === 0 ? 'No observed rain in MOSDAC HDF5 field' : 'Green cells = parsed MOSDAC field'}</div>
+          ) : (
+            <div className="text-amber-300">Blue core = simulated scenario radar</div>
+          )}
+        </div>
 
         <label className="flex items-center justify-between space-x-3 cursor-pointer text-slate-300 hover:text-white">
           <span className="flex items-center space-x-1.5">
@@ -676,7 +699,7 @@ export const MapView: React.FC<MapViewProps> = ({
         )}
 
         <div className="pt-2 border-t border-slate-800 space-y-1">
-          <div className="text-[10px] text-slate-400 font-bold uppercase">Basemap Provider</div>
+          <div className="text-[10px] text-slate-400 font-bold uppercase">Base Map</div>
           <select
             value={basemapStyle}
             onChange={(e) => setBasemapStyle(e.target.value)}

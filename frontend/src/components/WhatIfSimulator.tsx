@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   Activity, 
   Sliders, 
@@ -14,7 +14,7 @@ import {
   Satellite,
   RefreshCw
 } from 'lucide-react';
-import { api } from '../services/api';
+import { api, MosdacStatus } from '../services/api';
 import { SimulationResult } from '../types';
 
 interface WhatIfSimulatorProps {
@@ -39,7 +39,19 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [syncingMosdac, setSyncingMosdac] = useState<boolean>(false);
   const [mosdacMsg, setMosdacMsg] = useState<string | null>(null);
+  const [mosdacStatus, setMosdacStatus] = useState<MosdacStatus | null>(null);
   const [lastExecTime, setLastExecTime] = useState<number | null>(null);
+
+  const getApiErrorMessage = (error: any): string => {
+    return error?.response?.data?.error || error?.response?.data?.detail || error?.message || 'Unable to reach the flood backend';
+  };
+
+  useEffect(() => {
+    if (!isOpen) return;
+    api.getMosdacStatus().then(setMosdacStatus).catch((error) => {
+      setMosdacMsg(`Backend status unavailable: ${getApiErrorMessage(error)}`);
+    });
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -48,7 +60,9 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
     setMosdacMsg(null);
     try {
       const result = await api.syncMosdac();
-      setMosdacMsg(result.success ? `Synced ${result.data?.filename || 'live granule'}` : `Sync failed: ${result.error}`);
+      const refreshedStatus = await api.getMosdacStatus();
+      setMosdacStatus(refreshedStatus);
+      setMosdacMsg(result.success ? `Synced ${result.data?.filename || 'live granule'}` : `Sync failed: ${result.error || 'MOSDAC returned no data'}`);
       if (result.success) {
         handleScenarioChange('mosdac_live_satellite_dwr');
         setLoading(true);
@@ -65,7 +79,7 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
         onSimulationUpdate(liveSimulation);
       }
     } catch (error: any) {
-      setMosdacMsg(`Sync error: ${error.message}`);
+      setMosdacMsg(`Sync error: ${getApiErrorMessage(error)}`);
     } finally {
       setSyncingMosdac(false);
       setLoading(false);
@@ -104,11 +118,11 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
   };
 
   return (
-    <div className="fixed inset-y-0 right-0 w-96 bg-[#0f172a]/95 backdrop-blur-xl border-l border-slate-800 shadow-2xl p-6 z-40 flex flex-col font-sans overflow-y-auto">
+    <div className="fixed inset-y-0 right-0 w-96 bg-[#08101f]/98 backdrop-blur-xl border-l border-cyan-300/15 shadow-2xl p-6 z-40 flex flex-col font-sans overflow-y-auto command-enter">
       {/* Header */}
       <div className="flex items-center justify-between pb-4 border-b border-slate-800">
         <div className="flex items-center space-x-2 text-sky-400">
-          <Sliders className="w-5 h-5" />
+          <Sliders className="w-5 h-5 text-cyan-300" />
           <h2 className="font-extrabold text-sm tracking-wider uppercase">What-If Disaster Studio</h2>
         </div>
         <button
@@ -123,7 +137,7 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
         Dynamically adjust hydrologic rainfall intensity, debris blockage, and tidal backwater to stress-test municipal drainage resilience.
       </p>
 
-      <div className="mt-4 p-3 rounded-xl bg-gradient-to-br from-slate-900 via-sky-950/40 to-slate-900 border border-sky-500/40">
+      <div className="mt-4 command-panel command-panel-cyan p-3 rounded-xl">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Satellite className="w-4 h-4 text-sky-400" />
@@ -132,6 +146,15 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
           <span className="text-[10px] text-emerald-400 bg-emerald-950/80 px-1.5 py-0.5 rounded border border-emerald-800">READY</span>
         </div>
         <p className="text-[11px] text-slate-400 mt-1 font-mono">3RIMG_L2B_HEM HDF5 precipitation</p>
+        {mosdacStatus && (
+          <div className="mt-2 space-y-1 text-[10px] font-mono text-slate-300">
+            <div className="flex justify-between gap-2"><span className="text-slate-500">Backend acquisition</span><span className={mosdacStatus.acquisition_mode === 'LIVE_MOSDAC_CATALOG' ? 'text-emerald-300' : 'text-sky-300'}>{mosdacStatus.acquisition_mode}</span></div>
+            <div className="flex justify-between gap-2"><span className="text-slate-500">Observed HDF5 rainfall</span><span className="text-sky-300">{mosdacStatus.max_rain_mmh} mm/hr max</span></div>
+            <div className="flex justify-between gap-2"><span className="text-slate-500">Simulation base</span><span className="text-amber-300">{mosdacStatus.simulation_base_rain_mmh ?? '—'} mm/hr</span></div>
+            <div className="truncate text-slate-500" title={mosdacStatus.active_file}>Granule: <span className="text-slate-300">{mosdacStatus.active_file}</span></div>
+            <div className="text-slate-500">Backend parse status: <span className="text-emerald-300">{mosdacStatus.status}</span></div>
+          </div>
+        )}
         <button onClick={handleSyncMosdac} disabled={syncingMosdac} className="mt-2.5 w-full py-1.5 px-3 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 hover:text-white border border-sky-400/40 text-xs font-mono flex items-center justify-center space-x-1.5 transition-all">
           <RefreshCw className={`w-3.5 h-3.5 ${syncingMosdac ? 'animate-spin' : ''}`} />
           <span>{syncingMosdac ? 'Syncing with MOSDAC...' : 'Fetch Live MOSDAC Radar'}</span>
@@ -150,9 +173,9 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
             <div
               key={id}
               onClick={() => handleScenarioChange(id)}
-              className={`p-2.5 rounded-lg border cursor-pointer transition-all ${
-                selectedScenarioId === id
-                  ? 'bg-sky-500/20 border-sky-400 text-white shadow-md'
+              className={`scenario-card p-2.5 rounded-lg border cursor-pointer transition-all ${
+                  selectedScenarioId === id
+                  ? 'scenario-card-active bg-cyan-400/10 border-cyan-300/50 text-white shadow-[0_0_22px_rgba(0,217,255,0.08)]'
                   : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
               }`}
             >
@@ -271,7 +294,7 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
 
       {/* Execution Benchmark Feedback */}
       {lastExecTime !== null && (
-        <div className="mt-4 p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 font-mono text-[11px] flex items-center justify-between">
+          <div className="mt-4 p-2.5 rounded-lg bg-teal-400/10 border border-teal-300/30 text-teal-200 font-mono text-[11px] flex items-center justify-between">
           <span>Digital Twin Solved:</span>
           <span className="font-bold">{lastExecTime} ms</span>
         </div>
@@ -282,7 +305,7 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
         <button
           onClick={handleRunSimulation}
           disabled={loading}
-          className="w-full py-3 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 disabled:opacity-50 text-white font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-sky-500/30 transition-all flex items-center justify-center space-x-2"
+          className="w-full py-3 rounded-xl bg-cyan-400 hover:bg-cyan-300 disabled:opacity-50 text-slate-950 font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-cyan-400/20 transition-all flex items-center justify-center space-x-2"
         >
           {loading ? (
             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -301,7 +324,7 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
             setCapacityMult(1.0);
             setTideLevelM(2.4);
           }}
-          className="w-full py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-mono transition-colors flex items-center justify-center space-x-1.5"
+          className="w-full py-2 rounded-lg bg-slate-950/70 border border-white/[0.07] hover:border-cyan-300/25 text-slate-300 text-xs font-mono transition-colors flex items-center justify-center space-x-1.5"
         >
           <RotateCcw className="w-3.5 h-3.5" />
           <span>Reset Default Hydrology</span>

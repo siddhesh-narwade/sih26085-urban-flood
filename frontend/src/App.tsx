@@ -8,7 +8,9 @@ import { RoutingPanel } from './components/RoutingPanel';
 import { DrainageTwinView } from './components/DrainageTwinView';
 import { ProvenanceModal } from './components/ProvenanceModal';
 import { AlertsFeed } from './components/AlertsFeed';
+import { AnalyticsView } from './components/AnalyticsView';
 import { api } from './services/api';
+import { MosdacStatus } from './services/api';
 import { SimulationResult, RoutePlanResponse, TimelineStep } from './types';
 import { 
   AlertTriangle, 
@@ -23,9 +25,10 @@ import {
 } from 'lucide-react';
 
 export const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'map' | 'twin' | 'routing' | 'provenance'>('map');
+  const [activeTab, setActiveTab] = useState<'map' | 'twin' | 'routing' | 'provenance' | 'analytics'>('map');
   const [isWhatIfOpen, setIsWhatIfOpen] = useState<boolean>(false);
   const [simulation, setSimulation] = useState<SimulationResult | null>(null);
+  const [mosdacStatus, setMosdacStatus] = useState<MosdacStatus | null>(null);
   const [scenarios, setScenarios] = useState<Record<string, any>>({});
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(4); // Default to t=40 min (peak)
   const [selectedRoadId, setSelectedRoadId] = useState<string | null>(null);
@@ -57,6 +60,7 @@ export const App: React.FC = () => {
         setPoisGeoJSON(pois);
         setScenarios(scens);
         setSimulation(sim);
+        setMosdacStatus(await api.getMosdacStatus());
       } catch (err) {
         console.error("Initialization failed:", err);
       } finally {
@@ -76,8 +80,18 @@ export const App: React.FC = () => {
     ? Object.values(currentStep.drainage_nodes || {}).filter((n) => n.is_surcharged).length
     : 0;
 
+  const activeMode = isWhatIfOpen ? 'scenario' : activeTab;
+  const modeLabels: Record<string, string> = {
+    map: 'GIS command map / flood intelligence',
+    twin: 'Drainage digital twin / hydraulic telemetry',
+    routing: 'Emergency routing / response operations',
+    provenance: 'Scientific provenance / evidence registry',
+    analytics: 'Operations analytics / decision intelligence',
+    scenario: 'What-if scenario laboratory / controlled simulation'
+  };
+
   return (
-    <div className="flex flex-col h-screen w-screen bg-[#0a0f1d] text-slate-100 overflow-hidden select-none">
+    <div className={`command-shell command-theme-${activeMode} flex flex-col h-screen w-screen bg-[#060b16] text-slate-100 overflow-hidden select-none`}>
       {/* Top Command Center Header */}
       <Navbar
         simulation={simulation}
@@ -87,12 +101,14 @@ export const App: React.FC = () => {
         isWhatIfOpen={isWhatIfOpen}
       />
 
+      <div className="tab-context-bar">{modeLabels[activeMode]}</div>
+
       {/* Main Content Area */}
       <main className="flex-1 relative flex overflow-hidden">
         {loading ? (
-          <div className="flex-1 flex flex-col items-center justify-center space-y-3">
-            <div className="w-10 h-10 border-3 border-sky-400 border-t-transparent rounded-full animate-spin" />
-            <p className="font-mono text-xs text-sky-400">Loading Municipal Hydrodynamic Digital Twin...</p>
+          <div className="flex-1 flex flex-col items-center justify-center space-y-4 command-enter">
+            <div className="w-10 h-10 border-2 border-cyan-300 border-t-transparent rounded-full animate-spin shadow-[0_0_22px_rgba(0,217,255,0.2)]" />
+            <p className="font-mono text-xs text-cyan-200 tracking-wide">Loading Municipal Hydrodynamic Digital Twin...</p>
           </div>
         ) : (
           <>
@@ -110,6 +126,7 @@ export const App: React.FC = () => {
                   drainageEdgesGeoJSON={drainageEdgesGeoJSON}
                   poisGeoJSON={poisGeoJSON}
                   simulation={simulation}
+                  mosdacStatus={mosdacStatus}
                   currentStepIndex={currentStepIndex}
                   selectedRoute={selectedRoute}
                   onSelectRoad={(rId) => setSelectedRoadId(rId)}
@@ -122,9 +139,9 @@ export const App: React.FC = () => {
               </div>
 
               {/* Right Operational Sidebar */}
-              <aside className="w-96 h-full bg-[#0f172a]/95 backdrop-blur-md border-l border-slate-800 flex flex-col p-4 space-y-4 overflow-y-auto z-10 font-sans">
+              <aside className="w-96 h-full bg-[#08101f]/95 backdrop-blur-xl border-l border-white/[0.07] flex flex-col p-4 space-y-4 overflow-y-auto z-10 font-sans command-enter">
                 {/* Active Scenario Overview */}
-                <div className="bg-[#111827] border border-slate-800 p-4 rounded-2xl shadow-xl space-y-2">
+                <div className="command-panel command-panel-cyan p-4 space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 font-mono">
                       Active Scenario
@@ -133,7 +150,7 @@ export const App: React.FC = () => {
                       NOWCAST T+{currentStep?.time_minute || 0}m
                     </span>
                   </div>
-                  <h3 className="font-bold text-sm text-white">
+                  <h3 className="font-bold text-sm text-slate-100">
                     {simulation?.metadata.scenario_title}
                   </h3>
                   {/* Multiplier badge — only show when not 1.0 */}
@@ -144,25 +161,25 @@ export const App: React.FC = () => {
                     </div>
                   )}
                   <div className="grid grid-cols-2 gap-2 text-xs font-mono pt-1">
-                    <div className="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                    <div className="metric-card metric-info bg-slate-950/60 p-2.5 rounded-lg border border-white/[0.06]">
                       <div className="text-[10px] text-slate-400">Base Scenario Rate</div>
                       <div className="font-bold text-slate-300 mt-0.5">
                         {simulation?.metadata.scenario_base_intensity_mmh ?? '—'} mm/hr
                       </div>
                     </div>
-                    <div className="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                    <div className="metric-card metric-cyan bg-slate-950/60 p-2.5 rounded-lg border border-white/[0.06]">
                       <div className="text-[10px] text-slate-400">Storm Core @ T+{currentStep?.time_minute || 0}m</div>
                       <div className="font-bold text-sky-400 mt-0.5">
                         {currentStep?.current_rainfall_peak_mmh || 0} mm/hr
                       </div>
                     </div>
-                    <div className="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                    <div className="metric-card metric-purple bg-slate-950/60 p-2.5 rounded-lg border border-white/[0.06]">
                       <div className="text-[10px] text-slate-400">Applied Peak (×mult)</div>
                       <div className="font-bold text-indigo-400 mt-0.5">
                         {simulation?.metadata.applied_peak_intensity_mmh ?? currentStep?.current_rainfall_peak_mmh ?? '—'} mm/hr
                       </div>
                     </div>
-                    <div className="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                    <div className={`metric-card ${surchargedNodesCount > 0 ? 'metric-danger' : 'metric-safe'} bg-slate-950/60 p-2.5 rounded-lg border border-white/[0.06]`}>
                       <div className="text-[10px] text-slate-400">Drainage Surcharge</div>
                       <div className={`font-bold mt-0.5 ${surchargedNodesCount > 0 ? 'text-pink-400' : 'text-emerald-400'}`}>
                         {surchargedNodesCount} Node{surchargedNodesCount === 1 ? '' : 's'}
@@ -172,7 +189,7 @@ export const App: React.FC = () => {
                 </div>
 
                 {/* Street Inundation Depth Table */}
-                <div className="bg-[#111827] border border-slate-800 p-4 rounded-2xl shadow-xl space-y-3 flex-1 flex flex-col min-h-[220px]">
+                <div className="command-panel p-4 space-y-3 flex-1 flex flex-col min-h-[220px]">
                   <div className="flex items-center justify-between">
                     <h4 className="font-bold text-xs uppercase tracking-wider text-slate-300 font-mono flex items-center space-x-1.5">
                       <Droplets className="w-3.5 h-3.5 text-sky-400" />
@@ -257,6 +274,12 @@ export const App: React.FC = () => {
             {activeTab === 'provenance' && (
               <div className="flex-1 h-full">
                 <ProvenanceModal />
+              </div>
+            )}
+
+            {activeTab === 'analytics' && (
+              <div className="flex-1 h-full">
+                <AnalyticsView simulation={simulation} currentStepIndex={currentStepIndex} selectedRoute={selectedRoute} />
               </div>
             )}
           </>

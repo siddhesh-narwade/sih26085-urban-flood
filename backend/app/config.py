@@ -1,11 +1,10 @@
 import os
-from pydantic import BaseModel
 
 class SystemSettings:
     PROJECT_NAME: str = "SIH 26085 - Urban Flood Nowcasting System"
     ORGANIZATION: str = "Ministry of Earth Sciences (MoES) / NCMRWF"
     VERSION: str = "1.0.0-PROTOTYPE"
-    
+
     # Environment
     DEMO_MODE: bool = os.getenv("DEMO_MODE", "true").lower() == "true"
     HOST: str = os.getenv("HOST", "0.0.0.0")
@@ -15,7 +14,7 @@ class SystemSettings:
     MOSDAC_DWR_URL: str = os.getenv("MOSDAC_DWR_URL", "")
     MOSDAC_DWR_TOKEN: str = os.getenv("MOSDAC_DWR_TOKEN", "")
     MOSDAC_DWR_TIMEOUT_SEC: int = int(os.getenv("MOSDAC_DWR_TIMEOUT_SEC", "30"))
-    
+
     # File Paths
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     DATA_DIR = os.path.join(BASE_DIR, "data", "processed")
@@ -27,6 +26,7 @@ class SystemSettings:
     SCENARIOS_PATH = os.path.join(DATA_DIR, "nowcast_scenarios.json")
     MOSDAC_RAW_DIR = os.path.join(BASE_DIR, "data", "mosdac_raw")
     MOSDAC_PROCESSED_PATH = os.path.join(DATA_DIR, "mosdac_live_rainfall.json")
+
     MOSDAC_USERNAME: str = os.getenv("MOSDAC_USERNAME", "")
     MOSDAC_PASSWORD: str = os.getenv("MOSDAC_PASSWORD", "")
     MOSDAC_TOKEN_URL: str = "https://mosdac.gov.in/download_api/gettoken"

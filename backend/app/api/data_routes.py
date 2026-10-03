@@ -55,7 +55,11 @@ def get_mosdac_status() -> Dict[str, Any]:
         "active_file": latest.get("filename", "N/A"),
         "max_rain_mmh": latest.get("max_rain_mmh", 0.0),
         "mean_rain_mmh": latest.get("mean_rain_mmh", 0.0),
+        "spatial_samples": latest.get("spatial_samples", []),
+        "simulation_base_rain_mmh": max(float(latest.get("max_rain_mmh", 0.0)) * 10.0, 75.0) if latest else None,
         "status": latest.get("status", "READY"),
+        "acquisition_mode": latest.get("acquisition_mode", "LOCAL_MOSDAC_CACHE" if latest else "NOT_SYNCED"),
+        "backend_source": "MOSDAC catalog + HDF5 parser",
     }
 
 

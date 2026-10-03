@@ -1,3 +1,4 @@
+import importlib
 import pytest
 import sys
 import os
@@ -5,9 +6,24 @@ from fastapi.testclient import TestClient
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), "backend"))
 
+import app.config as config_module
 from app.main import app
 
 client = TestClient(app)
+
+def test_config_uses_environment_for_mosdac_credentials(monkeypatch):
+    monkeypatch.delenv("MOSDAC_USERNAME", raising=False)
+    monkeypatch.delenv("MOSDAC_PASSWORD", raising=False)
+    importlib.reload(config_module)
+    assert config_module.settings.MOSDAC_USERNAME == ""
+    assert config_module.settings.MOSDAC_PASSWORD == ""
+
+    monkeypatch.setenv("MOSDAC_USERNAME", "demo-user")
+    monkeypatch.setenv("MOSDAC_PASSWORD", "demo-pass")
+    importlib.reload(config_module)
+    assert config_module.settings.MOSDAC_USERNAME == "demo-user"
+    assert config_module.settings.MOSDAC_PASSWORD == "demo-pass"
+
 
 def test_api_health():
     res = client.get("/api/data/health")

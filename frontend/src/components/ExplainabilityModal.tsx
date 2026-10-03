@@ -52,9 +52,9 @@ export const ExplainabilityModal: React.FC<ExplainabilityModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-[#0f172a] border border-slate-700 rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="command-panel command-panel-cyan rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden command-enter">
         {/* Header */}
-        <div className="bg-slate-900 px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+        <div className="bg-slate-950/70 px-6 py-4 border-b border-white/[0.07] flex items-center justify-between">
           <div className="flex items-center space-x-2 text-sky-400">
             <HelpCircle className="w-5 h-5" />
             <h3 className="font-extrabold text-sm tracking-wider uppercase">
@@ -70,7 +70,7 @@ export const ExplainabilityModal: React.FC<ExplainabilityModalProps> = ({
         </div>
 
         {loading || !explanation ? (
-          <div className="p-12 flex flex-col items-center justify-center space-y-3">
+            <div className="p-12 flex flex-col items-center justify-center space-y-3 command-enter">
             <div className="w-8 h-8 border-3 border-sky-400 border-t-transparent rounded-full animate-spin" />
             <p className="text-xs font-mono text-slate-400">Analyzing multi-factor hydrodynamic causality...</p>
           </div>

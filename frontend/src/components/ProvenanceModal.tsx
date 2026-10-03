@@ -1,28 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { Database, ShieldCheck, FileText, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Database, ShieldCheck, FileText, CheckCircle2, AlertCircle, RefreshCw, Radio } from 'lucide-react';
 import { api } from '../services/api';
+import { MosdacStatus } from '../services/api';
 import { DataLayerMetadata } from '../types';
 
 export const ProvenanceModal: React.FC = () => {
   const [layers, setLayers] = useState<DataLayerMetadata[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [mosdacStatus, setMosdacStatus] = useState<MosdacStatus | null>(null);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
-  useEffect(() => {
-    const fetchProvenance = async () => {
+  const fetchProvenance = async () => {
+    setRefreshing(true);
       try {
-        const data = await api.getProvenance();
+        const [data, status] = await Promise.all([api.getProvenance(), api.getMosdacStatus()]);
         setLayers(data);
+        setMosdacStatus(status);
       } catch (err) {
         console.error("Failed to load provenance:", err);
       } finally {
         setLoading(false);
+        setRefreshing(false);
       }
-    };
+  };
+
+  useEffect(() => {
     fetchProvenance();
   }, []);
 
   return (
-    <div className="h-full bg-[#0a0f1d] p-6 overflow-y-auto font-sans space-y-6">
+    <div className="h-full bg-[#060b16] p-6 overflow-y-auto font-sans space-y-6 command-enter">
       <div className="max-w-5xl mx-auto space-y-6">
         {/* Header */}
         <div>
@@ -37,9 +44,33 @@ export const ProvenanceModal: React.FC = () => {
           </p>
         </div>
 
+        {mosdacStatus && (
+          <div className={`command-panel p-5 ${mosdacStatus.acquisition_mode === 'LIVE_MOSDAC_CATALOG' ? 'command-panel-teal' : 'command-panel-cyan'}`}>
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <Radio className={`w-5 h-5 ${mosdacStatus.acquisition_mode === 'LIVE_MOSDAC_CATALOG' ? 'text-emerald-400' : 'text-sky-400'}`} />
+                <div>
+                  <h3 className="font-bold text-sm text-white uppercase tracking-wider">MOSDAC DWR Evidence</h3>
+                  <p className="text-[11px] text-slate-400 font-mono">Backend status from /api/data/mosdac/status</p>
+                </div>
+              </div>
+              <button onClick={fetchProvenance} disabled={refreshing} className="p-2 rounded-lg border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800" title="Refresh MOSDAC backend status">
+                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+              </button>
+            </div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4 text-xs font-mono">
+              <div><div className="text-slate-500">Acquisition</div><div className="text-emerald-300 font-bold mt-1">{mosdacStatus.acquisition_mode}</div></div>
+              <div><div className="text-slate-500">Granule</div><div className="text-slate-200 mt-1 break-all">{mosdacStatus.active_file}</div></div>
+              <div><div className="text-slate-500">Parsed At</div><div className="text-slate-200 mt-1">{mosdacStatus.last_sync}</div></div>
+              <div><div className="text-slate-500">Rainfall</div><div className="text-sky-300 mt-1">{mosdacStatus.max_rain_mmh} mm/hr max</div></div>
+            </div>
+            <p className="text-[11px] text-slate-400 font-mono mt-4">Source: {mosdacStatus.backend_source} | Dataset: {mosdacStatus.dataset_id} | Field: {mosdacStatus.status}</p>
+          </div>
+        )}
+
         {/* Data Tiers Legend */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="bg-[#0f172a] border border-emerald-500/40 p-4 rounded-2xl">
+          <div className="metric-card metric-teal command-panel command-panel-teal p-4">
             <div className="flex items-center space-x-2 font-bold text-xs text-emerald-400 font-mono uppercase">
               <CheckCircle2 className="w-4 h-4" />
               <span>Tier A — Real Public Data</span>
@@ -49,7 +80,7 @@ export const ProvenanceModal: React.FC = () => {
             </p>
           </div>
 
-          <div className="bg-[#0f172a] border border-sky-500/40 p-4 rounded-2xl">
+          <div className="metric-card metric-cyan command-panel command-panel-cyan p-4">
             <div className="flex items-center space-x-2 font-bold text-xs text-sky-400 font-mono uppercase">
               <CheckCircle2 className="w-4 h-4" />
               <span>Tier B — Derived Topography</span>
@@ -59,7 +90,7 @@ export const ProvenanceModal: React.FC = () => {
             </p>
           </div>
 
-          <div className="bg-[#0f172a] border border-amber-500/40 p-4 rounded-2xl">
+          <div className="metric-card metric-warning command-panel command-panel-amber p-4">
             <div className="flex items-center space-x-2 font-bold text-xs text-amber-400 font-mono uppercase">
               <AlertCircle className="w-4 h-4" />
               <span>Tier C — Prototype Simulation</span>
@@ -71,7 +102,7 @@ export const ProvenanceModal: React.FC = () => {
         </div>
 
         {/* Table of Layers */}
-        <div className="bg-[#0f172a] border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+        <div className="command-panel rounded-2xl overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-800">
             <h3 className="font-bold text-sm text-white uppercase tracking-wider font-mono">
               Dataset Registry & Licensing Attributes

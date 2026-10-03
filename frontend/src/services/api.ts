@@ -6,6 +6,36 @@ import {
   DataLayerMetadata 
 } from '../types';
 
+export interface MosdacSyncResponse {
+  success: boolean;
+  message?: string;
+  error?: string;
+  data?: {
+    filename?: string;
+    timestamp?: string;
+    max_rain_mmh?: number;
+    mean_rain_mmh?: number;
+    acquisition_mode?: string;
+    status?: string;
+  };
+}
+
+export interface MosdacStatus {
+  connected: boolean;
+  credentials_configured: boolean;
+  dataset_id: string;
+  last_sync: string;
+  source: string;
+  active_file: string;
+  max_rain_mmh: number;
+  mean_rain_mmh: number;
+  spatial_samples: Array<{ lat: number; lon: number; rain_mmh: number }>;
+  simulation_base_rain_mmh: number | null;
+  status: string;
+  acquisition_mode: 'LIVE_MOSDAC_CATALOG' | 'LOCAL_MOSDAC_CACHE' | 'NOT_SYNCED' | string;
+  backend_source: string;
+}
+
 const API_BASE = '/api';
 
 export const api = {
@@ -66,11 +96,11 @@ export const api = {
     const res = await axios.post(`${API_BASE}/data/dwr/refresh`);
     return res.data;
   },
-  getMosdacStatus: async () => {
+  getMosdacStatus: async (): Promise<MosdacStatus> => {
     const res = await axios.get(`${API_BASE}/data/mosdac/status`);
     return res.data;
   },
-  syncMosdac: async () => {
+  syncMosdac: async (): Promise<MosdacSyncResponse> => {
     const res = await axios.post(`${API_BASE}/data/mosdac/sync`);
     return res.data;
   },
