@@ -131,12 +131,12 @@ export const ExplainabilityModal: React.FC<ExplainabilityModalProps> = ({
                     {/* Progress Bar */}
                     <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
                       <div
-                        className={`h-full rounded-full transition-all duration-500 ${
+                        className={`chart-fill-in h-full rounded-full transition-all duration-500 ${
                           factor.severity === 'CRITICAL' ? 'bg-pink-500' :
                           factor.severity === 'HIGH' ? 'bg-red-400' :
                           factor.severity === 'MODERATE' ? 'bg-amber-400' : 'bg-sky-400'
                         }`}
-                        style={{ width: `${factor.percentage}%` }}
+                        style={{ width: `${factor.percentage}%`, '--bar-delay': `${idx * 90}ms` } as React.CSSProperties}
                       />
                     </div>
                     <p className="text-[11px] text-slate-400">{factor.description}</p>

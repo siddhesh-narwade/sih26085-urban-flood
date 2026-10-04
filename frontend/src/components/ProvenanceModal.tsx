@@ -1,14 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { Database, ShieldCheck, FileText, CheckCircle2, AlertCircle, RefreshCw, Radio } from 'lucide-react';
+import React, { Suspense, useEffect, useState } from 'react';
+import { Database, ShieldCheck, FileText, CheckCircle2, AlertCircle, RefreshCw, Radio, Search, ChevronRight, ExternalLink } from 'lucide-react';
 import { api } from '../services/api';
 import { MosdacStatus } from '../services/api';
 import { DataLayerMetadata } from '../types';
+import { ProvenanceTier } from './ProvenanceScene3D';
+
+const ProvenanceScene3D = React.lazy(() => import('./ProvenanceScene3D').then(({ ProvenanceScene3D: Scene }) => ({ default: Scene })));
 
 export const ProvenanceModal: React.FC = () => {
   const [layers, setLayers] = useState<DataLayerMetadata[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [mosdacStatus, setMosdacStatus] = useState<MosdacStatus | null>(null);
   const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [activeTier, setActiveTier] = useState<ProvenanceTier | null>(null);
+  const [query, setQuery] = useState<string>('');
+  const [selectedLayerName, setSelectedLayerName] = useState<string | null>(null);
 
   const fetchProvenance = async () => {
     setRefreshing(true);
@@ -23,6 +29,25 @@ export const ProvenanceModal: React.FC = () => {
         setRefreshing(false);
       }
   };
+
+  const visibleLayers = activeTier
+    ? layers.filter((layer) => activeTier === 'REAL'
+      ? layer.classification.startsWith('REAL')
+      : activeTier === 'DERIVED'
+        ? layer.classification.startsWith('DERIVED')
+        : !layer.classification.startsWith('REAL') && !layer.classification.startsWith('DERIVED'))
+    : layers;
+  const normalizedQuery = query.trim().toLocaleLowerCase();
+  const filteredLayers = visibleLayers.filter((layer) => !normalizedQuery || [
+    layer.layer_name,
+    layer.classification,
+    layer.source,
+    layer.license,
+    layer.spatial_resolution,
+    layer.temporal_resolution,
+    layer.notes
+  ].join(' ').toLocaleLowerCase().includes(normalizedQuery));
+  const selectedLayer = filteredLayers.find((layer) => layer.layer_name === selectedLayerName) ?? filteredLayers[0] ?? null;
 
   useEffect(() => {
     fetchProvenance();
@@ -68,8 +93,12 @@ export const ProvenanceModal: React.FC = () => {
           </div>
         )}
 
+        <Suspense fallback={<div className="provenance-scene provenance-scene-loading" aria-label="Loading provenance constellation" />}>
+          <ProvenanceScene3D layers={layers} activeTier={activeTier} onSelectTier={setActiveTier} />
+        </Suspense>
+
         {/* Data Tiers Legend */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
           <div className="metric-card metric-teal command-panel command-panel-teal p-4">
             <div className="flex items-center space-x-2 font-bold text-xs text-emerald-400 font-mono uppercase">
               <CheckCircle2 className="w-4 h-4" />
@@ -104,37 +133,76 @@ export const ProvenanceModal: React.FC = () => {
         {/* Table of Layers */}
         <div className="command-panel rounded-2xl overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-800">
-            <h3 className="font-bold text-sm text-white uppercase tracking-wider font-mono">
-              Dataset Registry & Licensing Attributes
-            </h3>
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="font-bold text-sm text-white uppercase tracking-wider font-mono">Dataset Registry & Licensing Attributes</h3>
+              {activeTier && <button type="button" className="provenance-clear-filter" onClick={() => setActiveTier(null)}>CLEAR TIER FILTER ×</button>}
+            </div>
           </div>
 
           {loading ? (
             <div className="p-8 text-center text-xs font-mono text-slate-400">Loading dataset registry...</div>
           ) : (
-            <div className="divide-y divide-slate-800">
-              {layers.map((layer, idx) => (
-                <div key={idx} className="p-5 hover:bg-slate-900/40 transition-colors space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-sm text-white">{layer.layer_name}</span>
-                    <span className={`px-2.5 py-0.5 rounded text-[11px] font-mono font-bold ${
-                      layer.classification.includes('REAL') ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' :
-                      layer.classification.includes('DERIVED') ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40' :
-                      'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-                    }`}>
-                      {layer.classification}
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 text-xs font-mono text-slate-400">
-                    <div><span className="text-slate-500">Source:</span> {layer.source}</div>
-                    <div><span className="text-slate-500">License:</span> {layer.license}</div>
-                    <div><span className="text-slate-500">Spatial Resolution:</span> {layer.spatial_resolution}</div>
-                    <div><span className="text-slate-500">Temporal Resolution:</span> {layer.temporal_resolution}</div>
-                  </div>
-                  <p className="text-xs text-slate-300 pt-1 font-mono">{layer.notes}</p>
+            <>
+              <div className="provenance-registry-toolbar">
+                <label className="provenance-search">
+                  <Search className="w-4 h-4" aria-hidden="true" />
+                  <input value={query} onChange={(event) => setQuery(event.target.value)} type="search" placeholder="Search source, license, resolution…" aria-label="Search provenance records" />
+                  {query && <button type="button" onClick={() => setQuery('')} aria-label="Clear search">×</button>}
+                </label>
+                <span className="provenance-result-count">{filteredLayers.length} / {layers.length} RECORDS</span>
+              </div>
+              <div className="provenance-explorer">
+                <div className="provenance-source-list" role="listbox" aria-label="Dataset provenance records">
+                  {filteredLayers.map((layer, index) => {
+                    const tierClass = layer.classification.startsWith('REAL') ? 'real' : layer.classification.startsWith('DERIVED') ? 'derived' : 'simulated';
+                    const selected = selectedLayer?.layer_name === layer.layer_name;
+                    return (
+                      <button
+                        key={layer.layer_name}
+                        type="button"
+                        role="option"
+                        aria-selected={selected}
+                        className={`provenance-source-item provenance-source-${tierClass} ${selected ? 'is-selected' : ''}`}
+                        onClick={() => setSelectedLayerName(layer.layer_name)}
+                      >
+                        <span className="provenance-source-index">{String(index + 1).padStart(2, '0')}</span>
+                        <span className="provenance-source-copy">
+                          <strong>{layer.layer_name}</strong>
+                          <small>{layer.source}</small>
+                        </span>
+                        <span className="provenance-source-classification">{layer.classification.replace('_', ' ')}</span>
+                        <ChevronRight className="provenance-source-chevron w-4 h-4" />
+                      </button>
+                    );
+                  })}
+                  {!filteredLayers.length && <div className="provenance-no-results">NO MATCHING DATASETS</div>}
                 </div>
-              ))}
-            </div>
+
+                <article className="provenance-record-detail" aria-live="polite">
+                  {selectedLayer ? (
+                    <>
+                      <div className="provenance-detail-kicker"><FileText className="w-3.5 h-3.5" /> SELECTED EVIDENCE</div>
+                      <div className="provenance-detail-heading">
+                        <h4>{selectedLayer.layer_name}</h4>
+                        <span className={`provenance-detail-tier provenance-detail-tier-${selectedLayer.classification.startsWith('REAL') ? 'real' : selectedLayer.classification.startsWith('DERIVED') ? 'derived' : 'simulated'}`}>
+                          {selectedLayer.classification}
+                        </span>
+                      </div>
+                      <p className="provenance-detail-notes">{selectedLayer.notes}</p>
+                      <div className="provenance-detail-facts">
+                        <div className="provenance-fact provenance-fact-source"><span>SOURCE</span><p>{selectedLayer.source}</p></div>
+                        <div className="provenance-fact provenance-fact-license"><span>LICENSE</span><p><ShieldCheck className="w-3.5 h-3.5" />{selectedLayer.license}</p></div>
+                        <div className="provenance-fact"><span>SPATIAL RESOLUTION</span><p>{selectedLayer.spatial_resolution}</p></div>
+                        <div className="provenance-fact"><span>TEMPORAL RESOLUTION</span><p>{selectedLayer.temporal_resolution}</p></div>
+                      </div>
+                      <div className="provenance-detail-footer"><ExternalLink className="w-3 h-3" /> METADATA FROM ACTIVE BACKEND REGISTRY</div>
+                    </>
+                  ) : (
+                    <div className="provenance-no-results">{normalizedQuery ? 'NO RECORD MATCHES THIS SEARCH' : 'SELECT A DATASET TO INSPECT ITS PROVENANCE'}</div>
+                  )}
+                </article>
+              </div>
+            </>
           )}
         </div>
       </div>

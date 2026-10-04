@@ -10,7 +10,8 @@ import {
   Bus, 
   Zap,
   ArrowRight,
-  CheckCircle2
+  CheckCircle2,
+  Building2
 } from 'lucide-react';
 import { api } from '../services/api';
 import { RoutePlanResponse } from '../types';
@@ -63,11 +64,11 @@ export const RoutingPanel: React.FC<RoutingPanelProps> = ({
   };
 
   const vehicleOptions = [
-    { id: 'AMBULANCE', name: 'Ambulance', clearance: '20 cm', icon: Truck },
-    { id: 'FIRE_SERVICE', name: 'Fire Engine', clearance: '45 cm', icon: Truck },
-    { id: 'POLICE', name: 'Police Patrol', clearance: '25 cm', icon: ShieldCheck },
-    { id: 'PUBLIC_TRANSIT', name: 'Public Bus', clearance: '35 cm', icon: Bus },
-    { id: 'COMMUTER', name: 'Commuter Car', clearance: '15 cm', icon: Car },
+    { id: 'AMBULANCE', name: 'Ambulance', clearance: '20 cm', icon: Truck, accent: '#68efff' },
+    { id: 'FIRE_SERVICE', name: 'Fire Engine', clearance: '45 cm', icon: Truck, accent: '#ff8958' },
+    { id: 'POLICE', name: 'Police Patrol', clearance: '25 cm', icon: ShieldCheck, accent: '#7fa8ff' },
+    { id: 'PUBLIC_TRANSIT', name: 'Public Bus', clearance: '35 cm', icon: Bus, accent: '#ffd16a' },
+    { id: 'COMMUTER', name: 'Commuter Car', clearance: '15 cm', icon: Car, accent: '#50e1b7' },
   ];
 
   return (
@@ -93,57 +94,82 @@ export const RoutingPanel: React.FC<RoutingPanelProps> = ({
             <label className="text-xs font-bold uppercase tracking-wider text-slate-300 font-mono">
               Select Emergency Vehicle Profile
             </label>
-            <div className="grid grid-cols-5 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
               {vehicleOptions.map((v) => (
                 <button
                   key={v.id}
                   onClick={() => setVehicleType(v.id)}
-                  className={`p-3 rounded-xl border text-center transition-all ${
-                    vehicleType === v.id
-                      ? 'bg-sky-500/20 border-sky-400 text-white shadow-lg shadow-sky-500/10'
-                      : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
-                  }`}
+                  aria-pressed={vehicleType === v.id}
+                  style={{ '--vehicle-accent': v.accent } as React.CSSProperties}
+                  className={`vehicle-profile-card ${vehicleType === v.id ? 'vehicle-profile-selected' : ''}`}
                 >
-                  <div className="text-cyan-300 mb-1 flex justify-center"><v.icon className="w-5 h-5" /></div>
-                  <div className="text-xs font-bold">{v.name}</div>
-                  <div className="text-[10px] text-sky-400 font-mono mt-0.5">Max: {v.clearance}</div>
+                  <span className="vehicle-card-stage" aria-hidden="true">
+                    <span className="vehicle-model-platform" />
+                    <span className="vehicle-lane" />
+                    <v.icon className="vehicle-model-icon" />
+                    <span className="vehicle-beacon" />
+                  </span>
+                  <span className="vehicle-card-name">{v.name}</span>
+                  <span className="vehicle-card-clearance">Max: {v.clearance}</span>
                 </button>
               ))}
             </div>
           </div>
 
           {/* Waypoints Selection */}
-          <div className="grid grid-cols-2 gap-4 pt-2">
-            <div className="space-y-1.5">
-              <label className="text-xs font-mono text-slate-400 flex items-center space-x-1">
-                <MapPin className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Origin Dispatch Point</span>
-              </label>
-              <select
-                value={startNode}
-                onChange={(e) => setStartNode(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-slate-200 focus:outline-none focus:border-sky-500"
-              >
-                {junctions.map((j) => (
-                  <option key={j.id} value={j.id}>{j.name} ({j.id})</option>
-                ))}
-              </select>
+          <div className="route-waypoint-console">
+            <div className="route-waypoint-stage" aria-hidden="true">
+              <div className="route-waypoint-node route-waypoint-origin">
+                <span className="route-node-platform" />
+                <span className="route-node-orbit" />
+                <span className="route-node-core"><MapPin className="w-5 h-5" /></span>
+                <span className="route-node-caption">DISPATCH</span>
+              </div>
+              <div className="route-waypoint-track"><span className="route-waypoint-pulse" /></div>
+              <div className="route-waypoint-node route-waypoint-destination">
+                <span className="route-node-platform" />
+                <span className="route-node-orbit" />
+                <span className="route-node-core"><Building2 className="w-5 h-5" /></span>
+                <span className="route-node-caption">RESPONSE HUB</span>
+              </div>
             </div>
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-mono text-slate-400 flex items-center space-x-1">
-                <MapPin className="w-3.5 h-3.5 text-red-400" />
-                <span>Emergency Destination Hub</span>
-              </label>
-              <select
-                value={destNode}
-                onChange={(e) => setDestNode(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-slate-200 focus:outline-none focus:border-sky-500"
-              >
-                {junctions.map((j) => (
-                  <option key={j.id} value={j.id}>{j.name} ({j.id})</option>
-                ))}
-              </select>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="route-point-field route-point-origin space-y-1.5">
+                <label className="route-field-label" htmlFor="route-origin-select">
+                  <span className="route-field-icon"><MapPin className="w-4 h-4" /></span>
+                  <span className="route-field-title"><span className="route-field-kicker">01 / DEPARTURE</span><span>Origin Dispatch Point</span></span>
+                  <span className="route-field-number">A</span>
+                </label>
+                <select
+                  id="route-origin-select"
+                  value={startNode}
+                  onChange={(e) => setStartNode(e.target.value)}
+                  className="route-point-select w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-slate-200 focus:outline-none focus:border-sky-500"
+                >
+                  {junctions.map((j) => (
+                    <option key={j.id} value={j.id}>{j.name} ({j.id})</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="route-point-field route-point-destination space-y-1.5">
+                <label className="route-field-label" htmlFor="route-destination-select">
+                  <span className="route-field-icon"><Building2 className="w-4 h-4" /></span>
+                  <span className="route-field-title"><span className="route-field-kicker">02 / ARRIVAL</span><span>Emergency Destination Hub</span></span>
+                  <span className="route-field-number">B</span>
+                </label>
+                <select
+                  id="route-destination-select"
+                  value={destNode}
+                  onChange={(e) => setDestNode(e.target.value)}
+                  className="route-point-select w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-slate-200 focus:outline-none focus:border-sky-500"
+                >
+                  {junctions.map((j) => (
+                    <option key={j.id} value={j.id}>{j.name} ({j.id})</option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
 
@@ -151,16 +177,19 @@ export const RoutingPanel: React.FC<RoutingPanelProps> = ({
           <button
             onClick={handleCalculateRoute}
             disabled={loading}
-            className="route-cta w-full py-3.5 rounded-xl text-white font-extrabold text-xs uppercase tracking-[0.08em] transition-all flex items-center justify-center space-x-2"
+            aria-busy={loading}
+            className="route-cta w-full rounded-xl text-white font-extrabold text-xs uppercase tracking-[0.08em] transition-all"
           >
-            {loading ? (
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <>
-                <Zap className="w-4 h-4 fill-current" />
-                <span>Calculate Flood-Safe Route</span>
-              </>
-            )}
+            <span className="route-cta-content">
+              <span className="route-cta-icon">
+                {loading ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Zap className="w-4 h-4 fill-current" />}
+              </span>
+              <span className="route-cta-copy">
+                <span>{loading ? 'Calculating Flood-Safe Route' : 'Calculate Flood-Safe Route'}</span>
+                <small>{loading ? 'CHECKING WATER DEPTH & VEHICLE CLEARANCE' : `DISPATCH ANALYSIS · T+${currentStepTimeMin} MIN`}</small>
+              </span>
+              {!loading && <ArrowRight className="route-cta-arrow w-4 h-4" />}
+            </span>
           </button>
         </div>
 

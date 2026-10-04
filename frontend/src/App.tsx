@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { TimelineBar } from './components/TimelineBar';
 import { MapView } from './components/MapView';
@@ -9,6 +9,7 @@ import { DrainageTwinView } from './components/DrainageTwinView';
 import { ProvenanceModal } from './components/ProvenanceModal';
 import { AlertsFeed } from './components/AlertsFeed';
 import { AnalyticsView } from './components/AnalyticsView';
+import { CursorTrail } from './components/CursorTrail';
 import { api } from './services/api';
 import { MosdacStatus } from './services/api';
 import { SimulationResult, RoutePlanResponse, TimelineStep } from './types';
@@ -33,6 +34,7 @@ export const App: React.FC = () => {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(4); // Default to t=40 min (peak)
   const [selectedRoadId, setSelectedRoadId] = useState<string | null>(null);
   const [selectedRoute, setSelectedRoute] = useState<RoutePlanResponse | null>(null);
+  const cursorRef = useRef<HTMLDivElement>(null);
 
   // Geospatial layers
   const [roadsGeoJSON, setRoadsGeoJSON] = useState<any>(null);
@@ -90,8 +92,28 @@ export const App: React.FC = () => {
     scenario: 'What-if scenario laboratory / controlled simulation'
   };
 
+  const handleCursorMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === 'touch') return;
+    cursorRef.current?.style.setProperty('--cursor-x', `${event.clientX}px`);
+    cursorRef.current?.style.setProperty('--cursor-y', `${event.clientY}px`);
+  };
+
+  const resetCursorGlow = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === 'touch') return;
+    cursorRef.current?.style.setProperty('--cursor-x', '-1000px');
+    cursorRef.current?.style.setProperty('--cursor-y', '-1000px');
+  };
+
   return (
-    <div className={`command-shell command-theme-${activeMode} flex flex-col h-screen w-screen bg-[#060b16] text-slate-100 overflow-hidden select-none`}>
+    <div
+      className={`command-shell command-theme-${activeMode} flex flex-col h-screen w-screen bg-[#060b16] text-slate-100 overflow-hidden select-none`}
+      onPointerMove={handleCursorMove}
+      onPointerLeave={resetCursorGlow}
+    >
+      <CursorTrail />
+      <div ref={cursorRef} className="cursor-aura" aria-hidden="true">
+        <span className="cursor-reticle" />
+      </div>
       {/* Top Command Center Header */}
       <Navbar
         simulation={simulation}
@@ -115,7 +137,7 @@ export const App: React.FC = () => {
             {/* ==== GIS Map is ALWAYS mounted, hidden with CSS when not on map tab ==== */}
             {/* This preserves the Leaflet instance + all layer groups across tab switches */}
             <div
-              className="flex-1 flex w-full h-full relative"
+              className={`flex-1 flex w-full h-full relative ${activeTab === 'map' ? 'mode-view-enter' : ''}`}
               style={{ display: activeTab === 'map' ? 'flex' : 'none' }}
             >
               {/* GIS Map Canvas */}
@@ -245,17 +267,19 @@ export const App: React.FC = () => {
 
             {/* View 2: Technical Drainage Digital Twin */}
             {activeTab === 'twin' && (
-              <div className="flex-1 h-full">
+              <div className="flex-1 h-full min-w-0 mode-view-enter">
                 <DrainageTwinView
                   simulation={simulation}
                   currentStepIndex={currentStepIndex}
+                  drainageNodesGeoJSON={drainageNodesGeoJSON}
+                  drainageEdgesGeoJSON={drainageEdgesGeoJSON}
                 />
               </div>
             )}
 
             {/* View 3: Emergency Safe Routing — split view with map mini-preview + routing panel */}
             {activeTab === 'routing' && (
-              <div className="flex-1 h-full flex">
+              <div className="flex-1 h-full flex mode-view-enter">
                 {/* Left: Route Results panel */}
                 <div className="flex-1 h-full overflow-hidden">
                   <RoutingPanel
@@ -272,13 +296,13 @@ export const App: React.FC = () => {
 
             {/* View 4: Scientific Data Provenance */}
             {activeTab === 'provenance' && (
-              <div className="flex-1 h-full">
+              <div className="flex-1 h-full mode-view-enter">
                 <ProvenanceModal />
               </div>
             )}
 
             {activeTab === 'analytics' && (
-              <div className="flex-1 h-full">
+              <div className="flex-1 h-full mode-view-enter">
                 <AnalyticsView simulation={simulation} currentStepIndex={currentStepIndex} selectedRoute={selectedRoute} />
               </div>
             )}

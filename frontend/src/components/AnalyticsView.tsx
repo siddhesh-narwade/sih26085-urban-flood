@@ -38,7 +38,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({ simulation, curren
   const routeReady = safeRoads.length;
   const routeBlocked = routeRoads.length - routeReady;
   const routeReadyPercent = routeRoads.length ? Math.round((routeReady / routeRoads.length) * 100) : 0;
-  const routeDonutStyle = { background: `conic-gradient(#00e5a8 0deg ${routeReadyPercent * 3.6}deg, #ff3b4d ${routeReadyPercent * 3.6}deg 360deg)` };
+  const routeDonutStyle = { '--readiness-target-angle': `${routeReadyPercent * 3.6}deg` } as React.CSSProperties;
 
   const linePoints = rainfall.map((value, index) => {
     const x = chartPad.left + (index / Math.max(1, rainfall.length - 1)) * (chartWidth - chartPad.left - chartPad.right);
@@ -48,7 +48,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({ simulation, curren
   const areaPoints = `${chartPad.left},${chartHeight - chartPad.bottom} ${linePoints} ${chartWidth - chartPad.right},${chartHeight - chartPad.bottom}`;
 
   return (
-    <div className="h-full bg-[#060b16] p-6 overflow-y-auto font-sans command-enter">
+    <div className="analytics-dashboard h-full bg-[#060b16] p-6 overflow-y-auto font-sans command-enter">
       <div className="w-full max-w-[1600px] mx-auto space-y-5">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
@@ -75,8 +75,8 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({ simulation, curren
               <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="w-full h-auto" role="img" aria-label="Rainfall intensity forecast chart">
                 {[0, 0.25, 0.5, 0.75, 1].map((fraction) => { const y = chartPad.top + fraction * (chartHeight - chartPad.top - chartPad.bottom); return <line key={fraction} x1={chartPad.left} x2={chartWidth - chartPad.right} y1={y} y2={y} className="analytics-gridline" />; })}
                 <polygon points={areaPoints} className="analytics-area" />
-                <polyline points={linePoints} className="analytics-line" />
-                {rainfall.map((value, index) => { const x = chartPad.left + (index / Math.max(1, rainfall.length - 1)) * (chartWidth - chartPad.left - chartPad.right); const y = chartPad.top + (1 - value / getMax(rainfall)) * (chartHeight - chartPad.top - chartPad.bottom); return <circle key={index} cx={x} cy={y} r={index === currentStepIndex ? 5 : 2.5} className={index === currentStepIndex ? 'analytics-point analytics-point-active' : 'analytics-point'} />; })}
+                <polyline points={linePoints} className="analytics-line" pathLength={1} />
+                {rainfall.map((value, index) => { const x = chartPad.left + (index / Math.max(1, rainfall.length - 1)) * (chartWidth - chartPad.left - chartPad.right); const y = chartPad.top + (1 - value / getMax(rainfall)) * (chartHeight - chartPad.top - chartPad.bottom); return <circle key={index} cx={x} cy={y} r={index === currentStepIndex ? 5 : 2.5} className={index === currentStepIndex ? 'analytics-point analytics-point-active' : 'analytics-point'} style={{ '--point-delay': `${index * 24}ms` } as React.CSSProperties} />; })}
                 <text x={chartPad.left} y={chartHeight - 8} className="analytics-axis">T+0m</text><text x={chartWidth - chartPad.right} y={chartHeight - 8} textAnchor="end" className="analytics-axis">T+{timeline[timeline.length - 1]?.time_minute || 180}m</text>
                 <text x={chartPad.left - 8} y={chartPad.top + 4} textAnchor="end" className="analytics-axis">{formatNumber(peakRain)}</text><text x={chartPad.left - 8} y={chartHeight - chartPad.bottom} textAnchor="end" className="analytics-axis">0</text>
               </svg>
@@ -85,15 +85,18 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({ simulation, curren
 
           <Panel className="p-5" accent="danger">
             <div className="flex items-center justify-between mb-4"><SectionHeader icon={ShieldAlert} eyebrow="Ranked exposure" title="Most vulnerable roads" accent="danger" /><span className="text-[10px] text-slate-500 font-mono">T+{currentStep?.time_minute || 0}m</span></div>
-            <div className="space-y-3">{depthByRoad.map((road) => <div key={road.road_id}><div className="flex justify-between gap-3 text-xs mb-1"><span className="text-slate-300 truncate">{road.name}</span><span className="font-mono text-red-200">{formatNumber(road.water_depth_cm)} cm</span></div><div className="analytics-bar"><span className="analytics-bar-fill analytics-bar-danger" style={{ width: `${Math.min(100, (road.water_depth_cm / Math.max(depthByRoad[0]?.water_depth_cm || 1, 1)) * 100)}%` }} /></div></div>)}</div>
+            <div className="space-y-3">{depthByRoad.map((road, index) => <div key={road.road_id}><div className="flex justify-between gap-3 text-xs mb-1"><span className="text-slate-300 truncate">{road.name}</span><span className="font-mono text-red-200">{formatNumber(road.water_depth_cm)} cm</span></div><div className="analytics-bar"><span className="analytics-bar-fill analytics-bar-danger chart-fill-in" style={{ width: `${Math.min(100, (road.water_depth_cm / Math.max(depthByRoad[0]?.water_depth_cm || 1, 1)) * 100)}%`, '--bar-delay': `${index * 55}ms` } as React.CSSProperties} /></div></div>)}</div>
           </Panel>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-[0.8fr_1.2fr] gap-5">
-        <Panel className="p-5" accent="purple">
+        <div className="analytics-response-grid grid grid-cols-1 xl:grid-cols-[0.8fr_1.2fr] gap-5">
+        <Panel className="analytics-route-outlook p-5" accent="purple">
           <div className="flex items-center justify-between mb-4"><SectionHeader icon={ShieldAlert} eyebrow="Route readiness" title="Safer route outlook" accent="purple" /><StatusPill label={`${routeReadyPercent}% ready`} tone={routeReadyPercent >= 70 ? 'safe' : 'warning'} /></div>
           <div className="flex items-center gap-6">
-            <div className="analytics-donut" style={routeDonutStyle}><div className="analytics-donut-hole"><strong>{routeReadyPercent}%</strong><span>ready roads</span></div></div>
+            <div className="analytics-donut" style={routeDonutStyle}>
+              <div className="readiness-globe" aria-hidden="true" />
+              <div className="analytics-donut-hole"><strong>{routeReadyPercent}%</strong><span>ready roads</span></div>
+            </div>
             <div className="space-y-3 text-xs font-mono flex-1">
               <div className="flex items-center justify-between"><span className="text-slate-400"><i className="analytics-legend-dot analytics-legend-safe" />Ambulance-passable</span><strong className="text-teal-200">{routeReady}</strong></div>
               <div className="flex items-center justify-between"><span className="text-slate-400"><i className="analytics-legend-dot analytics-legend-danger" />Blocked / unsafe</span><strong className="text-red-200">{routeBlocked}</strong></div>
@@ -103,7 +106,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({ simulation, curren
           {selectedRoute && <div className="route-summary-strip mt-5"><span>Selected route</span><strong>{selectedRoute.safe_route_found ? 'SAFE ROUTE FOUND' : 'NO SAFE ROUTE'}</strong><span>{selectedRoute.safe_route_max_depth_cm} cm max · {selectedRoute.safe_route_eta_min} min ETA</span></div>}
         </Panel>
 
-        <Panel className="p-5" accent="teal">
+        <Panel className="analytics-safe-roads p-5" accent="teal">
           <div className="flex items-center justify-between mb-4"><SectionHeader icon={Route} eyebrow="Response corridors" title="Safer roads at current forecast step" accent="teal" /><span className="text-[10px] text-slate-500 font-mono">Ambulance clearance · T+{currentStep?.time_minute || 0}m</span></div>
           {safeRoads.length ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-3">
@@ -111,10 +114,16 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({ simulation, curren
                 const clearanceMargin = Math.max(0, 20 - road.water_depth_cm);
                 const barWidth = Math.max(12, (clearanceMargin / 20) * 100);
                 const hue = 158 + (index % 6) * 18;
+                const filledSegments = Math.max(1, Math.ceil((barWidth / 100) * 8));
                 return (
                   <div key={road.road_id} className="safe-road-row">
                     <div className="flex justify-between gap-3 text-xs mb-1"><span className="text-slate-300 truncate"><span className="safe-road-rank">{String(index + 1).padStart(2, '0')}</span>{road.name}</span><span className="font-mono text-teal-200">{formatNumber(road.water_depth_cm)} cm</span></div>
-                    <div className="safe-road-track"><span className="safe-road-fill" style={{ width: `${barWidth}%`, background: `linear-gradient(90deg, hsl(${hue} 78% 42%), hsl(${hue + 22} 82% 64%))` }} /></div>
+                    <div className="safe-road-segments" role="meter" aria-label={`${road.name} ambulance clearance margin`} aria-valuemin={0} aria-valuemax={20} aria-valuenow={clearanceMargin}>
+                      {Array.from({ length: 8 }, (_, segmentIndex) => {
+                        const isFilled = segmentIndex < filledSegments;
+                        return <span key={segmentIndex} className={`safe-road-segment ${isFilled ? 'safe-road-segment-active' : ''}`} style={isFilled ? { background: `linear-gradient(180deg, hsl(${hue + 22} 82% 64%), hsl(${hue} 78% 42%))`, '--segment-delay': `${(index * 8 + segmentIndex) * 24}ms` } as React.CSSProperties : undefined} />;
+                      })}
+                    </div>
                     <div className="flex justify-between text-[10px] mt-1 font-mono text-slate-500"><span>Clearance margin</span><span className="text-teal-300">{formatNumber(clearanceMargin)} cm</span></div>
                   </div>
                 );
@@ -123,9 +132,25 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({ simulation, curren
           ) : <div className="analytics-empty">No ambulance-passable roads at the active forecast step.</div>}
         </Panel>
 
-        <Panel className="p-5" accent="amber">
+        <Panel className="analytics-conduit-utilization p-5" accent="amber">
           <div className="flex items-center justify-between mb-4"><SectionHeader icon={Gauge} eyebrow="Hydraulic network" title="Conduit utilization" accent="amber" /><span className="text-[10px] text-slate-500 font-mono">Capacity pressure by edge</span></div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">{utilization.map((edge) => <div key={edge.edge_id}><div className="flex justify-between text-xs mb-1"><span className="text-slate-300 font-mono">{edge.edge_id}</span><span className={edge.utilization_pct >= 100 ? 'text-red-300' : edge.utilization_pct >= 80 ? 'text-amber-300' : 'text-teal-300'}>{formatNumber(edge.utilization_pct)}%</span></div><div className="analytics-bar"><span className={`analytics-bar-fill ${edge.utilization_pct >= 100 ? 'analytics-bar-danger' : edge.utilization_pct >= 80 ? 'analytics-bar-warning' : 'analytics-bar-teal'}`} style={{ width: `${Math.min(100, edge.utilization_pct)}%` }} /></div></div>)}</div>
+          <div className="hydraulic-column-chart">
+            {utilization.map((edge, index) => {
+              const utilizationHeight = Math.min(100, Math.max(0, edge.utilization_pct));
+              const tone = edge.utilization_pct >= 100 ? 'danger' : edge.utilization_pct >= 80 ? 'warning' : 'teal';
+              return (
+                <div key={edge.edge_id} className="hydraulic-column">
+                  <div className="hydraulic-column-reading">
+                    <span className="hydraulic-column-id">{edge.edge_id}</span>
+                    <span className={`hydraulic-column-value hydraulic-column-value-${tone}`}>{formatNumber(edge.utilization_pct)}%</span>
+                  </div>
+                  <div className="hydraulic-column-track" role="meter" aria-label={`${edge.edge_id} conduit utilization`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={utilizationHeight}>
+                    <span className={`hydraulic-column-fill hydraulic-column-fill-${tone}`} style={{ height: `${utilizationHeight}%`, '--column-delay': `${index * 55}ms` } as React.CSSProperties} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </Panel>
         </div>
       </div>

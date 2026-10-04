@@ -293,7 +293,7 @@ export const MapView: React.FC<MapViewProps> = ({
                   <div class="text-pink-300 text-[10px]">Backflow: <span class="font-extrabold text-pink-400">${stat?.surcharge_m3s || '0.0'} m³/s</span></div>
                 </div>
                 <div class="w-2.5 h-2.5 bg-pink-500 rotate-45 -mt-1 shadow-md"></div>
-                <div class="w-3.5 h-3.5 rounded-full bg-pink-500 border-2 border-white shadow-xl mt-0.5"></div>
+                <div class="surcharge-marker-core w-3.5 h-3.5 rounded-full bg-pink-500 border-2 border-white shadow-xl mt-0.5"></div>
               </div>
             `,
             iconSize: [0, 0],
@@ -385,6 +385,7 @@ export const MapView: React.FC<MapViewProps> = ({
       const peakRain = currentStep.current_rainfall_peak_mmh || 0;
       if (peakRain > 0) {
         const simulatedCircle = L.circle([stormLat, stormLon], {
+          className: 'radar-range-ring',
           radius: Math.min(3000, Math.max(1200, peakRain * 22)),
           fillColor: '#0ea5e9',
           fillOpacity: 0.18,
@@ -393,6 +394,7 @@ export const MapView: React.FC<MapViewProps> = ({
           dashArray: '4, 6'
         });
         const simulatedCore = L.circleMarker([stormLat, stormLon], {
+          className: 'radar-core-marker',
           radius: 12,
           fillColor: '#38bdf8',
           color: '#ffffff',
@@ -412,6 +414,7 @@ export const MapView: React.FC<MapViewProps> = ({
     observedSamples.forEach((sample) => {
       const radius = Math.min(900, Math.max(250, sample.rain_mmh * 30));
       const observedCell = L.circle([sample.lat, sample.lon], {
+        className: 'radar-observed-cell',
         radius,
         fillColor: '#22c55e',
         fillOpacity: 0.2,
@@ -468,6 +471,7 @@ export const MapView: React.FC<MapViewProps> = ({
       const path2Color = selectedRoute.direct_route_is_flooded ? '#ef4444' : '#3b82f6';
 
       const directLine = L.polyline(directCoords, {
+        className: 'baseline-route-flow',
         color: path2Color,
         weight: 5,
         dashArray: selectedRoute.direct_route_is_flooded ? '6, 8' : '4, 4',
@@ -508,8 +512,10 @@ export const MapView: React.FC<MapViewProps> = ({
       safeCoords.forEach(([lat, lon]) => allRouteLatLngs.push(L.latLng(lat, lon)));
 
       const safeLine = L.polyline(safeCoords, {
+        className: 'safe-route-flow',
         color: '#10b981',
         weight: 7,
+        dashArray: '10, 12',
         opacity: 0.95
       });
 
